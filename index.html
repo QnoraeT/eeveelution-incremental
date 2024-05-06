@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<head>
+	<title>EVB Incremental !!</title>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" rel="stylesheet" type="text/css">
+
+	<script src="src/utils/break_eternity.js"></script>
+    <script src="src/utils/calc.js"></script>
+    <script src="src/utils/format.js"></script>
+
+    <script src="src/main.js"></script>
+    <script src="src/members/fabi.js"></script>
+</head>
+<body onload="loadGame()" style="background-color: #000;">
+    <div style="display: flex; flex-direction: column;">
+        <div id="story" style="display: flex; flex-direction: column; align-items: center;">
+            <button onclick="nextStory()" id="nextStory" style="width: 13.5vw; height: 4vw; font-family: Tinos; color: #fff; background-color: #222; font-size: 2vw; border: 0.4vw solid #444" onclick="nextStory()">Next</button>
+            <div id="storyThing"></div>
+        </div>
+        <div id="gameplay" style="display: flex; justify-content: center; flex-direction: column; align-items: center">
+            <div id="fabi" style="padding: 0.5vw; display: flex; flex-direction: column; align-items: center; color: #4aadd4; font-size: 2vw; border: 0.4vw solid #4aadd4; background-color: #204d5f;">
+                <span id="fabiLvAll">You are level <b><span id="fabiLv" style="font-size: 2.5vw"></span></b>. (<span id="fabiXPr"></span> / <span id="fabiMaxXP"></span>)</span>
+                <span id="fabiLvNextAll">Next feature at level <b><span id="fabiLvNext" style="font-size: 2.5vw"></span></b>.</span>
+                <span id="fabiPatAll">You have pet FABI <b><span id="fabiPat" style="font-size: 2.5vw;"></span></b> times.</span>
+                <span id="fabiMemAll">You have <span id="fabiMem"></span>.</span>
+                <button onclick="petFABI()" id="petFabi" style="font-family: Tinos; color: #6fbfdf; font-size: 2vw; border: 0.4vw solid #4aadd4; background-color: #204d5f;">
+                    Pet FABI <span id="fabiPatAmt"></span>.
+                </button>
+                <button onclick="getFABIMember()" id="getFabiMember" style="font-family: Tinos; color: #6fbfdf; font-size: 2vw; border: 0.4vw solid #4aadd4; background-color: #204d5f;">
+                    Get a member.<br>
+                    Cost: <span id="fabiMemPatCost"></span> pets.
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
