@@ -41,7 +41,8 @@ function saveTheFrickingGame() {
 const otherGameStuffIg = {
     FPS: 0,
     sessionTime: 0,
-    delta: 0
+    delta: 0,
+    gameDelta: D(0),
 }
 
 let player = {}
@@ -56,16 +57,32 @@ let currentSave = 0;
 
 function resetPlayer() {
     player = {
+        timeSpeed: D(1),
+        setTimeSpeed: D(1),
         story: [0, 0],
         inStory: true,
         name: "",
         gender: 0, // 0 = they/them, 1 = he/him, 2 = she/her
-        fabi: {
+        tearonq: {
+            gender: 0,
             pats: D(0),
+            totalPats: D(0),
             members: D(0),
-            bestLv: D(1)
+            bestLv: D(1),
+            friendship: D(120),
+            temp: D(0)
+        },
+        janko: {
+            generators: D(0),
+            energy: D(0),
+            excessEnergy: D(0),
+            upgrades: [D(0), D(0)]
         }
     }
+}
+
+function pronouns(gender) {
+    return [["they", "them"], ["he", "him"], ["she", "her"]][gender]
 }
 
 function updatePlayerData(player) {
@@ -74,8 +91,12 @@ function updatePlayerData(player) {
         player.version = 0;
     }
     if (player.version === 0) {
+        player.janko.upgrades = [D(0), D(0)]
+        player.version = 1;
+    }
+    if (player.version === 1) {
 
-        // player.version = 1;
+        // player.version = 2;
     }
 }
 
@@ -101,6 +122,8 @@ function loadGame() {
         console.log("reset");
     }
 
+    setupHTML()
+
     window.requestAnimationFrame(gameLoop);
 
     function gameLoop(timeStamp) {
@@ -119,8 +142,8 @@ function loadGame() {
                     fpsList = [];
                 }
 
-                let gameDelta = Decimal.mul(otherGameStuffIg.delta, player.timeSpeed).mul(player.setTimeSpeed);
-                player.gameTime = Decimal.add(player.gameTime, gameDelta);
+                otherGameStuffIg.gameDelta = Decimal.mul(otherGameStuffIg.delta, player.timeSpeed).mul(player.setTimeSpeed);
+                player.gameTime = Decimal.add(player.gameTime, otherGameStuffIg.gameDelta);
                 player.totalTime += otherGameStuffIg.delta;
                 otherGameStuffIg.sessionTime += otherGameStuffIg.delta;
 
@@ -130,7 +153,8 @@ function loadGame() {
                     el("storyThing").innerHTML = STORIES[player.story[0]].story[player.story[1]]
                 }
                 
-                updateFABI()
+                updateJanko()
+                updateTearonq()
 
                 if (timeStamp > lastSave + saveTime) {
                     console.log(saveTheFrickingGame());
@@ -150,3 +174,6 @@ function loadGame() {
     }
 }
 
+function setupHTML() {
+    setupJankoHTML()
+}

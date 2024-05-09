@@ -10,27 +10,45 @@
     <script src="src/utils/format.js"></script>
 
     <script src="src/main.js"></script>
-    <script src="src/members/fabi.js"></script>
+    <script src="src/members/janko.js"></script>
+    <script src="src/members/tearonq.js"></script>
 </head>
 <body onload="loadGame()" style="background-color: #000;">
     <div style="display: flex; flex-direction: column;">
         <div id="story" style="display: flex; flex-direction: column; align-items: center;">
-            <button onclick="nextStory()" id="nextStory" style="width: 13.5vw; height: 4vw; font-family: Tinos; color: #fff; background-color: #222; font-size: 2vw; border: 0.4vw solid #444" onclick="nextStory()">Next</button>
+            <button onclick="nextStory()" id="nextStory" style="width: 135px; height: 40px; font-family: Tinos; color: #fff; background-color: #222; font-size: 20px; border: 3px solid #444" onclick="nextStory()">Next</button>
             <div id="storyThing"></div>
         </div>
-        <div id="gameplay" style="display: flex; justify-content: center; flex-direction: column; align-items: center">
-            <div id="fabi" style="padding: 0.5vw; display: flex; flex-direction: column; align-items: center; color: #4aadd4; font-size: 2vw; border: 0.4vw solid #4aadd4; background-color: #204d5f;">
-                <span id="fabiLvAll">You are level <b><span id="fabiLv" style="font-size: 2.5vw"></span></b>. (<span id="fabiXPr"></span> / <span id="fabiMaxXP"></span>)</span>
-                <span id="fabiLvNextAll">Next feature at level <b><span id="fabiLvNext" style="font-size: 2.5vw"></span></b>.</span>
-                <span id="fabiPatAll">You have pet FABI <b><span id="fabiPat" style="font-size: 2.5vw;"></span></b> times.</span>
-                <span id="fabiMemAll">You have <span id="fabiMem"></span>.</span>
-                <button onclick="petFABI()" id="petFabi" style="font-family: Tinos; color: #6fbfdf; font-size: 2vw; border: 0.4vw solid #4aadd4; background-color: #204d5f;">
-                    Pet FABI <span id="fabiPatAmt"></span>.
+        <div id="gameplay" style="display: flex; justify-content: center; flex-direction: row; align-items: center; flex-wrap: wrap">
+            <div id="tearonq" style="margin: 2px; padding: 8px; display: flex; flex-direction: column; align-items: center; font-size: 16px; border: 3px solid #ff3c00; color: #ff3c00; background-color: #501300;">
+                <b><span style="font-size: 20px">TearonQ, the Flareon</span></b><br>
+                <span id="tearonqLvAll">You are level <b><span id="tearonqLv" style="font-size: 20px"></span></b>. (<span id="tearonqXPr"></span> / <span id="tearonqMaxXP"></span>)</span>
+                <span id="tearonqLvNextAll">Next feature at level <b><span id="tearonqLvNext" style="font-size: 20px"></span></b>.</span>
+                <span id="tearonqTempAll"><span id="uTempTQ"></span> currently at <b><span id="tearonqTemp" style="font-size: 20px;"></span></b>°C.</span>
+                <span id="tearonqFrenAll"><span id="uFrenTQ"></span> a friendship score of <b><span id="tearonqFren" style="font-size: 20px;"></span></b>!</span><br>
+                <span id="tearonqPatAll">You have pet <span id="uPetTQ"></span> <b><span id="tearonqPat" style="font-size: 20px;"></span></b> times.</span>
+                <span id="tearonqMemAll">You have <span id="tearonqMem"></span>.</span>
+                <button onclick="petTearonq()" id="petTearonq" style="font-family: Tinos; color: #ff3c00; font-size: 20px; border: 3px solid #ff3c00; background-color: #501300;">
+                    Pet TearonQ <span id="tearonqPatAmt"></span>.
                 </button>
-                <button onclick="getFABIMember()" id="getFabiMember" style="font-family: Tinos; color: #6fbfdf; font-size: 2vw; border: 0.4vw solid #4aadd4; background-color: #204d5f;">
+                <button onclick="getTearonqMember()" id="getTearonqMember" style="font-family: Tinos; color: #ff3c00; font-size: 20px; border: 3px solid #ff3c00; background-color: #501300;">
                     Get a member.<br>
-                    Cost: <span id="fabiMemPatCost"></span> pets.
+                    Cost: <span id="tearonqMemPatCost"></span> pets.
                 </button>
+            </div>
+            <div id="janko" style="margin: 2px; padding: 8px; display: flex; flex-direction: column; align-items: center; font-size: 16px; border: 3px solid #ffee00; color: #fbff00; background-color: #6e6d20;">
+                <b><span style="font-size: 20px">Janko, the Pichu</span></b><br>
+                <span id="jankoGenAll">You have <b><span id="jankoGen" style="font-size: 20px"></span></b> generators.</span>
+                <span id="jankoEngAll">Janko currently storing <b><span id="jankoEng" style="font-size: 20px"></span></b> / <b><span id="jankoEngCap" style="font-size: 20px"></span></b>J of energy.</span>
+                <span id="jankoEngOvAll">He has overflowed <b><span id="jankoEngOv" style="font-size: 20px"></span></b>J of energy, making you pat TearonQ <b><span id="jankoEngOvEff" style="font-size: 20px"></span></b>x more.</span>
+                <span id="jankoEngGainAll">He is currently generating <b><span id="jankoEngGain" style="font-size: 20px;"></span></b>J per second.</span>
+                <button onclick="buyGenerator()" id="genJanko" style="font-family: Tinos; color: #ffee00; font-size: 20px; border: 3px solid #ffee00; background-color: #6e6d20;">
+                    Get a generator.
+                    Cost: <span id="jankoGenPatCost"></span> pets.
+                </button>
+                <div id="jankoUpgs" style="display: flex; justify-content: center; flex-direction: row; align-items: center; flex-wrap: wrap">
+
+                </div>
             </div>
         </div>
     </div>

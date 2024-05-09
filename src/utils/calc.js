@@ -463,6 +463,7 @@ function inverseFact(x) {
  * @param {Decimal} x 
  * @param {Decimal} a 
  * @param {Decimal} b 
+ * @returns {Decimal}
  */
 function linearIncreaseMulti(x, a, b) { // i cannot find a good inverse for this
     x = new Decimal(x);
@@ -518,33 +519,31 @@ function lerp(t, s, e, type, p) {
     return (s * (1 - t)) + (e * t);
 }
 
-/**
- * e ^ (((x + s) ^ p / (p * s ^ (p - 1))) - s / p)
- * @param {Decimal} x 
- * @param {Decimal} exp 
- * @param {Decimal} poly 
- * @param {Decimal} start 
- * @param {Boolean} inverse
- */
-function expPoly(x, exp, poly, start, inverse) {
-    x = D(x);
-    exp = D(exp);
-    poly = D(poly);
-    start = D(start);
-
-    if (exp.eq(1)) {
-        return inverse
-            ? x.add(start.div(poly)).mul(poly.mul(start.pow(poly.sub(1)))).root(poly).sub(start)
-            : x.add(start).pow(poly).div(poly.mul(start.pow(poly.sub(1)))).sub(start.div(poly))
-    } else {
-        return inverse
-            ? x.log(exp).add(start.div(poly)).mul(poly.mul(start.pow(poly.sub(1)))).root(poly).sub(start)
-            : exp.pow(x.add(start).pow(poly).div(poly.mul(start.pow(poly.sub(1)))).sub(start.div(poly)))
-    }
-
-}
-
 function sumHarmonicSeries(x) {
     x = D(x)
     return x.ln().add(0.5772156649015329).add(Decimal.div(0.5, x)).sub(Decimal.div(1, (x.pow(2).mul(12)))).add(Decimal.div(1, (x.pow(4).mul(120))))
+}
+
+/**
+ * ((x + start) ^ poly / (poly * start ^ (poly - 1))) - start / poly
+ * @param {Decimal} x 
+ * @param {Decimal} poly 
+ * @param {Decimal} start 
+ * @param {Boolean} inverse
+ * @returns {Decimal}
+ */
+function smoothPoly(x, poly, start, inverse) {
+    return inverse
+    ? x.add(start.div(poly)).mul(poly.mul(start.pow(poly.sub(1)))).root(poly).sub(start)
+    : x.add(start).pow(poly).div(poly.mul(start.pow(poly.sub(1)))).sub(start.div(poly))
+}
+
+function smoothExp(exp, x, inv) {
+    return inv
+        ? x.mul(exp.ln()).add(1).log(exp)
+        : Decimal.pow(exp, x).sub(1).div(exp.ln())
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
