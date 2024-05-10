@@ -11,7 +11,10 @@ const JANKO_ENG_UPS = [
             return i
         },
         get upgDesc() {
-            return `Get <b><span style="font-size: 20px; color: #00ff00">Art</span></b> to join EVB, and multiply TearonQ pats by ${format(this.eff)}x.`
+            return `Get <b><span style="font-size: 20px; color: #00ff00">Art</span></b> to join EVB, and multiply TearonQ pats by <b><span style="font-size: 20px">${format(this.eff)}</span></b>x.`
+        },
+        get show() {
+            return Decimal.gte(player.janko.bestEnergy, 20)
         }
     },
     {
@@ -31,7 +34,10 @@ const JANKO_ENG_UPS = [
             return i
         },
         get upgDesc() {
-            return `Multiply TearonQ pats by ${format(this.effBase)}x. (Total: ${format(this.eff)}x)`
+            return `Multiply TearonQ pats by <b><span style="font-size: 20px">${format(this.effBase)}</span></b>x. (Total: ${format(this.eff)}x)`
+        },
+        get show() {
+            return Decimal.gte(player.janko.bestEnergy, 20)
         }
     },
 ]
@@ -40,9 +46,9 @@ function setupJankoHTML() {
     let table = ""
     for (let i = 0; i < JANKO_ENG_UPS.length; i++) {
         table += `
-        <button onclick="buyUpgrade(${i})" id="jankoUpg${i}" style="font-family: Tinos; color: #ffee00; font-size: 20px; border: 3px solid #ffee00; background-color: #6e6d20;">
-            <span id="jankoUpgDesc${i}"></span>
-            <span id="jankoUpgEff${i}"></span>
+        <button onclick="buyJankoUpgrade(${i})" id="jankoUpg${i}" style="width: 200px; height: 150px; font-family: Tinos; color: #ffee00; font-size: 16px; border: 3px solid #ffee00; background-color: #6e6d20;">
+            <span id="jankoUpgDesc${i}"></span><br>
+            <span id="jankoUpgEff${i}"></span><br>
             <span id="jankoUpgCost${i}"></span>
         </button>
         `
@@ -57,12 +63,13 @@ function updateJanko() {
 
     player.janko.energy = Decimal.add(player.janko.energy, tmp.energyGen.mul(otherGameStuffIg.gameDelta))
     if (player.janko.energy.gte(tmp.energyCap)) {
-        player.janko.excessEnergy = player.janko.excessEnergy.add(player.janko.energy.sub(tmp.energyCap))
+        player.janko.excessEnergy = Decimal.add(player.janko.excessEnergy, player.janko.energy.sub(tmp.energyCap))
         player.janko.energy = tmp.energyCap
     }
+    player.janko.bestEnergy = Decimal.max(player.janko.bestEnergy, player.janko.energy)
 
     tmp.jankoGenCost = calcJankoGenCost(player.janko.generators, false)
-    tmp.energyOverflowEff = Decimal.max(player.janko.excessEnergy, 0).div(100).add(1).mul(10).dilate(0.9).div(10).pow(1.5)
+    tmp.energyOverflowEff = Decimal.max(player.janko.excessEnergy, 0).div(100).add(1).pow(0.25).mul(10).dilate(1.1).div(10)
 
     el("janko").style.display = Decimal.gte(tmp.tearonqLevel, 5) ? "flex" : "none";
     el("jankoGen").innerText = format(player.janko.generators, 1)
@@ -73,14 +80,23 @@ function updateJanko() {
     el("jankoEngOvEff").innerText = format(tmp.energyOverflowEff, 2)
     el("jankoGenPatCost").innerText = format(tmp.jankoGenCost)
     for (let i = 0; i < JANKO_ENG_UPS.length; i++) {
-        // el("jankoUpgDesc" + i).innerText = 
-        table += `
-        <button onclick="buyUpgrade(${i})" id="jankoUpg${i}" style="font-family: Tinos; color: #ffee00; font-size: 20px; border: 3px solid #ffee00; background-color: #6e6d20;">
-            <span id="jankoUpgDesc${i}"></span>
-            <span id="jankoUpgEff${i}"></span>
-            <span id="jankoUpgCost${i}"></span>
-        </button>
-        `
+        el("jankoUpg" + i).style.display = Decimal.gte(tmp.tearonqLevel, 5) ? "" : "none";
+        if (!JANKO_ENG_UPS[i].show) {
+            continue;
+        }
+
+
+        table = Decimal.gte(player.janko.upgrades[i], JANKO_ENG_UPS[i].cap) ? "#ffee00" : Decimal.gte(player.janko.energy, JANKO_ENG_UPS[i].cost) ? "#aa9900" : "#665500"
+        el("jankoUpg" + i).style.border = "3px solid " + table
+
+        table = JANKO_ENG_UPS[i].desc
+        if (!JANKO_ENG_UPS[i].cap.eq(Infinity)) {
+            table += ` (${format(player.janko.upgrades[i])}/${format(JANKO_ENG_UPS[i].cap)})`
+        }
+        el("jankoUpgDesc" + i).innerText = table
+        el("jankoUpgEff" + i).innerHTML = JANKO_ENG_UPS[i].upgDesc
+        el("jankoUpgCost" + i).innerText = `Cost: ${format(JANKO_ENG_UPS[i].cost)} J of energy.`
+        
     }
 
 }
@@ -88,13 +104,20 @@ function updateJanko() {
 function calcJankoGenCost(x, inv = false) {
     x = D(x)
     return inv
-        ? smoothPoly(x.div(100).log2(), D(3), D(50), true)
-        : smoothPoly(x, D(3), D(50), false).pow_base(2).mul(100)
+        ? smoothPoly(x.div(100).log2(), D(3), D(25), true)
+        : smoothPoly(x, D(3), D(25), false).pow_base(2).mul(100)
 }
 
 function buyGenerator() {
     if (Decimal.gte(player.tearonq.pats, tmp.jankoGenCost)) {
         player.tearonq.pats = Decimal.sub(player.tearonq.pats, tmp.jankoGenCost)
         player.janko.generators = Decimal.add(player.janko.generators, 1)
+    }
+}
+
+function buyJankoUpgrade(id) {
+    if (Decimal.gte(player.janko.energy, JANKO_ENG_UPS[id].cost) && Decimal.lt(player.janko.upgrades[id], JANKO_ENG_UPS[id].cap)) {
+        player.janko.energy = Decimal.sub(player.janko.energy, JANKO_ENG_UPS[id].cost)
+        player.janko.upgrades[id] = Decimal.add(player.janko.upgrades[id], 1)
     }
 }

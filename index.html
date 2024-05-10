@@ -10,6 +10,7 @@
     <script src="src/utils/format.js"></script>
 
     <script src="src/main.js"></script>
+    <script src="src/members/art.js"></script>
     <script src="src/members/janko.js"></script>
     <script src="src/members/tearonq.js"></script>
 </head>
@@ -49,6 +50,21 @@
                 <div id="jankoUpgs" style="display: flex; justify-content: center; flex-direction: row; align-items: center; flex-wrap: wrap">
 
                 </div>
+            </div>
+            <div id="art" style="margin: 2px; padding: 8px; display: flex; flex-direction: column; align-items: center; font-size: 16px; border: 3px solid #00ff0d; color: #00ff0d; background-color: #004704;">
+                <b><span style="font-size: 20px">Art, the Leafeon</span></b><br>
+                <span id="artEngAbsAll">Art has absorbed <b><span id="artEngAbs" style="font-size: 20px"></span></b>J of energy.</span>
+                <span id="artEngAbsEffAll">This makes Janko be able to store <b><span id="absEngAbsEff" style="font-size: 20px"></span></b>x more energy.</span>
+                <span id="artNutrientAll">Art currently has <b><span id="artNutrientAmt" style="font-size: 20px"></span></b>g of nutrients.</span>
+                <button onclick="toggleArtNutrient()" id="artNutrientGet" style="font-family: Tinos; color: #00ff0d; font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
+                    Try to get nutrients using energy.<br>
+                    Conversion: <span id="artNutrientConvG"></span>g/<span id="artNutrientConvJ"></span> J<br>
+                    Rate: <span id="artNutrientConvSpeed"></span> J/s
+                </button>
+                <button onclick="toggleArtAbsorb()" id="artAbsorbGet" style="font-family: Tinos; color: #00ff0d; font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
+                    Attempt to absorb energy.<br>
+                    Rate: <span id="artAbsorbJSpeed"></span> J/s, -<span id="artNutrientLossSpeed"></span>g/s
+                </button>
             </div>
         </div>
     </div>

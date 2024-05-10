@@ -75,8 +75,15 @@ function resetPlayer() {
         janko: {
             generators: D(0),
             energy: D(0),
+            bestEnergy: D(0),
             excessEnergy: D(0),
             upgrades: [D(0), D(0)]
+        },
+        art: {
+            absorbed: D(0),
+            nutrients: D(10),
+            state: 0,
+            elements: [D(0), D(0), D(0), D(0), D(0)]
         }
     }
 }
@@ -91,12 +98,8 @@ function updatePlayerData(player) {
         player.version = 0;
     }
     if (player.version === 0) {
-        player.janko.upgrades = [D(0), D(0)]
-        player.version = 1;
-    }
-    if (player.version === 1) {
 
-        // player.version = 2;
+        // player.version = 1;
     }
 }
 
@@ -153,6 +156,7 @@ function loadGame() {
                     el("storyThing").innerHTML = STORIES[player.story[0]].story[player.story[1]]
                 }
                 
+                updateArt()
                 updateJanko()
                 updateTearonq()
 
