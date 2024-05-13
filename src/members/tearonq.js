@@ -6,8 +6,8 @@ const TEARONQ_FEATURE_REQ = [
 ]
 
 function updateTearonq() {
-    tmp.tearonqMemberCost = smoothPoly(D(player.tearonq.members), D(5), D(60), false).mul(10).add(20)
-    tmp.tearonqMemberTarget = smoothPoly(Decimal.sub(player.tearonq.members, 20).div(10), D(5), D(60), true)
+    tmp.tearonqMemberCost = smoothExp(D(1.05), smoothPoly(D(player.tearonq.members), D(1.2), D(200), false), false).mul(10).add(20)
+    tmp.tearonqMemberTarget = smoothPoly(smoothExp(D(1.05), Decimal.sub(player.tearonq.pats, 20).div(10), true), D(1.2), D(200), true)
 
     player.tearonq.friendship = Decimal.max(player.tearonq.totalPats, 0).add(1024).log2().log10().mul(10).dilate(2).mul(12)
     player.tearonq.temperature = Decimal.pow(0.99, otherGameStuffIg.gameDelta).mul(player.tearonq.temperature)
@@ -16,8 +16,9 @@ function updateTearonq() {
     tmp.tearonqPPS = D(1)
     tmp.tearonqPPS = tmp.tearonqPPS.mul(Decimal.add(player.tearonq.members, 1))
     tmp.tearonqPPS = tmp.tearonqPPS.mul(tmp.energyOverflowEff)
-    if (Decimal.gte(player.janko.upgrades[0], 1)) tmp.tearonqPPS = tmp.tearonqPPS.mul(JANKO_ENG_UPS[0].eff)
-    if (Decimal.gte(player.janko.upgrades[1], 1)) tmp.tearonqPPS = tmp.tearonqPPS.mul(JANKO_ENG_UPS[1].eff)
+    if (Decimal.gte(player.janko.upgrades[0], 1)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(JANKO_ENG_UPS[0].eff) }
+    if (Decimal.gte(player.janko.upgrades[1], 1)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(JANKO_ENG_UPS[1].eff) }
+    tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].eff)
 
     tmp.tearonqLevelBase = D(19)
     tmp.tearonqLevel = calcTearonqLevel(player.tearonq.totalPats, true).floor().max(player.tearonq.bestLv)

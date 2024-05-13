@@ -77,19 +77,20 @@ function resetPlayer() {
             energy: D(0),
             bestEnergy: D(0),
             excessEnergy: D(0),
-            upgrades: [D(0), D(0)]
+            upgrades: [D(0), D(0), D(0), D(0)]
         },
         art: {
             absorbed: D(0),
             nutrients: D(10),
             state: 0,
-            elements: [D(0), D(0), D(0), D(0), D(0)]
+            elements: [D(0), D(0), D(0), D(0), D(0)],
+            elementSelected: 0
         }
     }
 }
 
 function pronouns(gender) {
-    return [["they", "them"], ["he", "him"], ["she", "her"]][gender]
+    return [["they", "them", "their"], ["he", "him", "his"], ["she", "her", "her"]][gender]
 }
 
 function updatePlayerData(player) {
@@ -130,47 +131,40 @@ function loadGame() {
     window.requestAnimationFrame(gameLoop);
 
     function gameLoop(timeStamp) {
-        try {
-            let generate;
-            otherGameStuffIg.delta = (timeStamp - oldTimeStamp) / 1000;
-            if (otherGameStuffIg.delta > 0) {
-                fpsList.push(otherGameStuffIg.delta);
-                if (timeStamp > lastFPSCheck) {
-                    lastFPSCheck = timeStamp + 500;
-                    otherGameStuffIg.FPS = 0;
-                    for (let i = 0; i < fpsList.length; ++i) {
-                        otherGameStuffIg.FPS += fpsList[i];
-                    }
-                    otherGameStuffIg.FPS = (fpsList.length / otherGameStuffIg.FPS).toFixed(1);
-                    fpsList = [];
+        otherGameStuffIg.delta = (timeStamp - oldTimeStamp) / 1000;
+        if (otherGameStuffIg.delta > 0) {
+            fpsList.push(otherGameStuffIg.delta);
+            if (timeStamp > lastFPSCheck) {
+                lastFPSCheck = timeStamp + 500;
+                otherGameStuffIg.FPS = 0;
+                for (let i = 0; i < fpsList.length; ++i) {
+                    otherGameStuffIg.FPS += fpsList[i];
                 }
-
-                otherGameStuffIg.gameDelta = Decimal.mul(otherGameStuffIg.delta, player.timeSpeed).mul(player.setTimeSpeed);
-                player.gameTime = Decimal.add(player.gameTime, otherGameStuffIg.gameDelta);
-                player.totalTime += otherGameStuffIg.delta;
-                otherGameStuffIg.sessionTime += otherGameStuffIg.delta;
-
-                el("story").style.display = (player.inStory) ? "flex" : "none";
-                el("gameplay").style.display = (!player.inStory) ? "flex" : "none";
-                if (player.inStory) {
-                    el("storyThing").innerHTML = STORIES[player.story[0]].story[player.story[1]]
-                }
-                
-                updateArt()
-                updateJanko()
-                updateTearonq()
-
-                if (timeStamp > lastSave + saveTime) {
-                    console.log(saveTheFrickingGame());
-                    lastSave = timeStamp;
-                }
-
-                // misc unimportant stuff
+                otherGameStuffIg.FPS = (fpsList.length / otherGameStuffIg.FPS).toFixed(1);
+                fpsList = [];
             }
-        } catch (e) {
-            console.error(e);
-            console.log("Game saving has been paused. It's likely that your save is broken or the programmer (TearonQ) is an idiot? Don't call them that, though.");
-            return;
+
+            otherGameStuffIg.gameDelta = Decimal.mul(otherGameStuffIg.delta, player.timeSpeed).mul(player.setTimeSpeed);
+            player.gameTime = Decimal.add(player.gameTime, otherGameStuffIg.gameDelta);
+            player.totalTime += otherGameStuffIg.delta;
+            otherGameStuffIg.sessionTime += otherGameStuffIg.delta;
+
+            el("story").style.display = (player.inStory) ? "flex" : "none";
+            el("gameplay").style.display = (!player.inStory) ? "flex" : "none";
+            if (player.inStory) {
+                el("storyThing").innerHTML = STORIES[player.story[0]].story[player.story[1]]
+            }
+            
+            updateArt()
+            updateJanko()
+            updateTearonq()
+
+            if (timeStamp > lastSave + saveTime) {
+                console.log(saveTheFrickingGame());
+                lastSave = timeStamp;
+            }
+
+            // misc unimportant stuff
         }
         // do not change order at all
         oldTimeStamp = timeStamp;
@@ -179,5 +173,6 @@ function loadGame() {
 }
 
 function setupHTML() {
+    setupArtHTML()
     setupJankoHTML()
 }

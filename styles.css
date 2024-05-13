@@ -1,0 +1,25 @@
+.tearonqButton {
+    color: #ff3c00; 
+    font-size: 20px; 
+    border: 3px solid #ff3c00; 
+    background-color: #501300;
+    transition-duration: 0.2s;
+}
+
+.tearonqButton:hover {
+    background-color: #6d1900;
+}
+
+.jankoButton {
+    color: #ffee00; 
+    font-size: 20px; 
+    border: 3px solid #ffee00; 
+    background-color: #6e6d20;
+}
+
+.jankoButton:hover {
+    color: #ffee00; 
+    font-size: 20px; 
+    border: 3px solid #ffee00; 
+    background-color: #6e6d20;
+}
