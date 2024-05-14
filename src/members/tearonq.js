@@ -14,11 +14,17 @@ function updateTearonq() {
     tmp.tearonqEffectiveTemp = player.tearonq.temperature.add(37)
 
     tmp.tearonqPPS = D(1)
-    tmp.tearonqPPS = tmp.tearonqPPS.mul(Decimal.add(player.tearonq.members, 1))
+
+    let pow = D(1)
+    if (Decimal.gte(player.art.elements[1], ART_ELEMENTS[1].milestones[2].req)) { pow = pow.mul(ART_ELEMENTS[1].milestones[2].effect) }
+    tmp.tearonqPPS = tmp.tearonqPPS.mul(Decimal.add(player.tearonq.members, 1).pow(pow))
+
     tmp.tearonqPPS = tmp.tearonqPPS.mul(tmp.energyOverflowEff)
     if (Decimal.gte(player.janko.upgrades[0], 1)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(JANKO_ENG_UPS[0].eff) }
     if (Decimal.gte(player.janko.upgrades[1], 1)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(JANKO_ENG_UPS[1].eff) }
     tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].eff)
+    if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[2].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].milestones[2].effect) }
+    if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[3].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].milestones[3].effect) }
 
     tmp.tearonqLevelBase = D(19)
     tmp.tearonqLevel = calcTearonqLevel(player.tearonq.totalPats, true).floor().max(player.tearonq.bestLv)
@@ -63,7 +69,9 @@ function calcTearonqLevel(x, inv = false) {
 function petTearonq() {
     player.tearonq.pats = Decimal.add(player.tearonq.pats, tmp.tearonqPPS)
     player.tearonq.totalPats = Decimal.add(player.tearonq.totalPats, tmp.tearonqPPS)
-    player.tearonq.temperature = Decimal.max(player.tearonq.temperature, 0).add(1).mul(4).root(3).dilate(1.25).pow10().add(tmp.tearonqPPS).log10().dilate(0.8).pow(3).div(4).sub(1)
+    let tempGain = tmp.tearonqPPS
+    if (Decimal.gte(player.art.elements[4], ART_ELEMENTS[4].milestones[0].req)) { tempGain = tempGain.mul(ART_ELEMENTS[4].milestones[0].effect) }
+    player.tearonq.temperature = Decimal.max(player.tearonq.temperature, 0).add(1).mul(4).root(3).dilate(1.25).pow10().add(tempGain).log10().dilate(0.8).pow(3).div(4).sub(1)
 }
 
 function getTearonqMember() {

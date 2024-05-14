@@ -42,6 +42,15 @@ const ART_ELEMENTS = [
                 }
             },
             {
+                req: D(2000),
+                get effect() {
+                    return Decimal.max(player.tearonq.temperature, 1).log10().add(1)
+                },
+                get desc() {
+                    return `TearonQ's temperature also increases how much ${pronouns(player.tearonq.gender)[0] + (player.tearonq.gender === 0 ? " get" : " gets")} pat by <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x.`
+                }
+            },
+            {
                 req: D(125000),
                 get effect() {
                     return D(0.1)
@@ -84,7 +93,7 @@ const ART_ELEMENTS = [
             {
                 req: D(4000),
                 get effect() {
-                    return D(1.05)
+                    return D(1.15)
                 },
                 get desc() {
                     return `TearonQ members effect is raised to the ^<b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>.`
@@ -93,7 +102,7 @@ const ART_ELEMENTS = [
             {
                 req: D(200000),
                 get effect() {
-                    return D(5)
+                    return D(10)
                 },
                 get desc() {
                     return `TearonQ's temperature increases <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x as fast.`
@@ -103,7 +112,7 @@ const ART_ELEMENTS = [
     },
     {
         get eff() {
-            return Decimal.max(player.art.elements[2], 0).add(1).ln().div(4).add(1).pow(4).sub(1).mul(0.01).add(1)
+            return Decimal.max(player.art.elements[2], 0).add(1).ln().div(5).add(1).pow(5).sub(1).mul(0.01).add(1)
         },
         get effDesc() {
             return `Hydrogen buffs Janko's energy capacity by <b><span style="font-size: 20px">${format(this.eff, 2)}</span></b>x.`
@@ -122,6 +131,24 @@ const ART_ELEMENTS = [
                 }
             },
             {
+                req: D(2500),
+                get effect() {
+                    return Decimal.max(player.tearonq.temperature, 0).div(100).add(1).pow(0.7)
+                },
+                get desc() {
+                    return `TearonQ's temperature also increases Art's absorption speed by <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x.`
+                }
+            },
+            {
+                req: D(5000),
+                get effect() {
+                    return Decimal.max(player.tearonq.pats, 0).add(1).log10().pow(2).div(400).add(1)
+                },
+                get desc() {
+                    return `TearonQ's pats increase how much energy Janko can hold by <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x.`
+                }
+            },
+            {
                 req: D(100000),
                 get effect() {
                     return D(2)
@@ -134,7 +161,7 @@ const ART_ELEMENTS = [
     },
     {
         get eff() {
-            return Decimal.max(player.art.elements[3], 0).add(1).ln().div(2).add(1).pow(2).sub(1).mul(0.02).add(1)
+            return Decimal.max(player.art.elements[3], 0).div(1000).add(1).ln().div(3).add(1).pow(2)
         },
         get effDesc() {
             return `Carbon increases Art's overall speed by <b><span style="font-size: 20px">${format(this.eff, 2)}</span></b>x.`
@@ -146,7 +173,7 @@ const ART_ELEMENTS = [
             {
                 req: D(7500),
                 get effect() {
-                    return Decimal.max(player.art.nutrients, 0).add(1).ln().div(3).add(1).pow(3).div(100).add(1)
+                    return Decimal.max(player.art.nutrients, 0).div(1000).add(1).ln().div(12).add(1).pow(3)
                 },
                 get desc() {
                     return `Art's current nutrients multiply his speed by <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x.`
@@ -180,14 +207,14 @@ const ART_ELEMENTS = [
             {
                 req: artHugReq(D(1)),
                 get effect() {
-                    return ART_ELEMENTS[4].eff.mul(0.2).add(1)
+                    return ART_ELEMENTS[4].eff.add(1)
                 },
                 get desc() {
                     return `TearonQ hugs increases ${pronouns(player.tearonq.gender)[2]} temperature by <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x.`
                 }
             },
             {
-                req: artHugReq(D(7)),
+                req: artHugReq(D(6)),
                 get effect() {
                     return Decimal.pow(1.1, ART_ELEMENTS[4].eff)
                 },
@@ -209,13 +236,13 @@ const ART_ELEMENTS = [
 ]
 
 function artHugReq(x) {
-    return x.sub(1).pow(1.2).pow_base(2).mul(10).ceil()
+    return x.sub(1).pow(1.2).pow_base(2).mul(1000).ceil()
 }
 
 function artHugTarget(x) {
     x = Decimal.max(x, 0)
-    if (x.lt(10)) { return D(0) }
-    return x.div(10).log2().root(1.2).add(1).floor()
+    if (x.lt(1000)) { return D(0) }
+    return x.div(1000).log2().root(1.2).add(1).floor()
 }
 
 function setupArtHTML() {
@@ -233,6 +260,7 @@ function updateArt() {
     tmp.artTotalSpeed = D(1)
     tmp.artTotalSpeed = tmp.artTotalSpeed.mul(ART_ELEMENTS[3].eff)
     tmp.artTotalSpeed = tmp.artTotalSpeed.mul(JANKO_ENG_UPS[3].eff)
+    if (Decimal.gte(player.art.elements[3], ART_ELEMENTS[3].milestones[0].req)) { tmp.artTotalSpeed = tmp.artTotalSpeed.mul(ART_ELEMENTS[3].milestones[0].effect) }
 
     tmp.artNConversionGper = D(1)
     if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[0].req)) { tmp.artNConversionGper = tmp.artNConversionGper.mul(ART_ELEMENTS[0].milestones[0].effect) }
@@ -242,11 +270,16 @@ function updateArt() {
     tmp.artNConversionSpeedJ = tmp.artNConversionSpeedJ.mul(JANKO_ENG_UPS[2].eff)
     tmp.artNConversionSpeedJ = tmp.artNConversionSpeedJ.mul(tmp.artTotalSpeed)
     
+    tmp.artOverallAbsSpd = D(1)
+    if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[1].req)) { tmp.artOverallAbsSpd = tmp.artOverallAbsSpd.mul(ART_ELEMENTS[0].milestones[1].effect) }
+    if (Decimal.gte(player.art.elements[2], ART_ELEMENTS[2].milestones[1].req)) { tmp.artOverallAbsSpd = tmp.artOverallAbsSpd.mul(ART_ELEMENTS[2].milestones[1].effect) }
+
     tmp.artAbsorbJSpeed = D(25)
-    if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[1].req)) { tmp.artAbsorbJSpeed = tmp.artAbsorbJSpeed.mul(ART_ELEMENTS[0].milestones[1].effect) }
+    tmp.artAbsorbJSpeed = tmp.artAbsorbJSpeed.mul(tmp.artOverallAbsSpd)
     tmp.artAbsorbJSpeed = tmp.artAbsorbJSpeed.mul(tmp.artTotalSpeed)
 
     tmp.artAbsorbNutrientLossSpeed = D(0.5)
+    tmp.artAbsorbNutrientLossSpeed = tmp.artAbsorbNutrientLossSpeed.mul(tmp.artOverallAbsSpd)
     tmp.artAbsorbNutrientLossSpeed = tmp.artAbsorbNutrientLossSpeed.mul(tmp.artTotalSpeed)
     
     tmp.artNutrientExtractSpeed = [D(2), D(2), D(1), D(5), D(2.5)][player.art.elementSelected]

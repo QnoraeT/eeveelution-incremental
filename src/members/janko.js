@@ -11,7 +11,7 @@ const JANKO_ENG_UPS = [
             return i
         },
         get upgDesc() {
-            return `Get <b><span style="font-size: 16px; color: #00ff00">Art</span></b> to join EVB, and multiply TearonQ pats by <b><span style="font-size: 16px">${format(this.eff)}</span></b>x.`
+            return `Get <b><span style="font-size: 16px; color: #00ff00">Art</span></b> to join EVB, and multiply TearonQ pats by <b><span style="font-size: 16px">${format(this.eff, 1)}</span></b>x.`
         },
         get show() {
             return Decimal.gte(player.janko.bestEnergy, 20)
@@ -38,7 +38,7 @@ const JANKO_ENG_UPS = [
             return i
         },
         get upgDesc() {
-            return `Multiply TearonQ pats by <b><span style="font-size: 16px">${format(this.effBase)}</span></b>x. (Total: ${format(this.eff)}x)`
+            return `Multiply TearonQ pats by <b><span style="font-size: 16px">${format(this.effBase, 1)}</span></b>x. (Total: ${format(this.eff)}x)`
         },
         get show() {
             return Decimal.gte(player.janko.bestEnergy, 20)
@@ -49,7 +49,7 @@ const JANKO_ENG_UPS = [
         cap: D(5),
         desc: "Enrich Art's soil!",
         get cost() {
-            return [D(400), D(5000), D(30000), D(2e9), D(1e11), D(Infinity)][D(player.janko.upgrades[2]).toNumber()]
+            return [D(400), D(5000), D(30000), D(1e5), D(1e6), D(Infinity)][D(player.janko.upgrades[2]).toNumber()]
         },
         get eff() {
             let exp = this.effBase
@@ -61,7 +61,7 @@ const JANKO_ENG_UPS = [
             return i
         },
         get upgDesc() {
-            return `Enable Art to extract various molecules, and make his nutrient speed <b><span style="font-size: 16px">${format(this.effBase)}</span></b>x faster. (Total: ${format(this.eff)}x)`
+            return `Enable Art to extract various molecules, and make his nutrient speed <b><span style="font-size: 16px">${format(this.effBase, 1)}</span></b>x faster. (Total: ${format(this.eff)}x)`
         },
         get show() {
             return Decimal.gte(player.janko.bestEnergy, 100)
@@ -115,6 +115,7 @@ function updateJanko() {
     tmp.energyCap = D(1000)
     tmp.energyCap = tmp.energyCap.mul(tmp.artAbsEngEff)
     tmp.energyCap = tmp.energyCap.mul(ART_ELEMENTS[2].eff)
+    if (Decimal.gte(player.art.elements[2], ART_ELEMENTS[2].milestones[2].req)) { tmp.energyCap = tmp.energyCap.mul(ART_ELEMENTS[2].milestones[2].effect) }
 
     tmp.jankoGenEff = Decimal.eq(player.janko.generators, 0) ? D(0) : Decimal.pow(2, player.janko.generators)
     tmp.energyGen = tmp.jankoGenEff.mul(player.tearonq.temperature).div(100)
