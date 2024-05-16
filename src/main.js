@@ -70,7 +70,8 @@ function resetPlayer() {
             members: D(0),
             bestLv: D(1),
             friendship: D(120),
-            temp: D(0)
+            temp: D(0),
+            highTemp: D(0)
         },
         janko: {
             generators: D(0),
@@ -99,8 +100,12 @@ function updatePlayerData(player) {
         player.version = 0;
     }
     if (player.version === 0) {
+        player.tearonq.highTemp = D(0)
+        player.version = 1;
+    }
+    if (player.version === 1) {
 
-        // player.version = 1;
+        // player.version = 2;
     }
 }
 

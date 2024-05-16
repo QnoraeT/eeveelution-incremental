@@ -10,6 +10,7 @@ function updateTearonq() {
     tmp.tearonqMemberTarget = smoothPoly(smoothExp(D(1.05), Decimal.sub(player.tearonq.pats, 20).div(10), true), D(1.2), D(200), true)
 
     player.tearonq.friendship = Decimal.max(player.tearonq.totalPats, 0).add(1024).log2().log10().mul(10).dilate(2).mul(12)
+    player.tearonq.highTemp = Decimal.max(player.tearonq.highTemp, player.tearonq.temperature)
     player.tearonq.temperature = Decimal.pow(0.99, otherGameStuffIg.gameDelta).mul(player.tearonq.temperature)
     tmp.tearonqEffectiveTemp = player.tearonq.temperature.add(37)
 
@@ -25,6 +26,7 @@ function updateTearonq() {
     tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].eff)
     if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[2].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].milestones[2].effect) }
     if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[3].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].milestones[3].effect) }
+    if (Decimal.gte(player.art.elements[4], ART_ELEMENTS[4].milestones[1].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[4].milestones[1].effect) }
 
     tmp.tearonqLevelBase = D(19)
     tmp.tearonqLevel = calcTearonqLevel(player.tearonq.totalPats, true).floor().max(player.tearonq.bestLv)
@@ -70,7 +72,9 @@ function petTearonq() {
     player.tearonq.pats = Decimal.add(player.tearonq.pats, tmp.tearonqPPS)
     player.tearonq.totalPats = Decimal.add(player.tearonq.totalPats, tmp.tearonqPPS)
     let tempGain = tmp.tearonqPPS
+    if (Decimal.gte(player.art.elements[1], ART_ELEMENTS[1].milestones[3].req)) { tempGain = tempGain.mul(ART_ELEMENTS[1].milestones[3].effect) }
     if (Decimal.gte(player.art.elements[4], ART_ELEMENTS[4].milestones[0].req)) { tempGain = tempGain.mul(ART_ELEMENTS[4].milestones[0].effect) }
+    if (Decimal.gte(player.art.elements[4], ART_ELEMENTS[4].milestones[1].req)) { tempGain = tempGain.mul(ART_ELEMENTS[4].milestones[1].effect) }
     player.tearonq.temperature = Decimal.max(player.tearonq.temperature, 0).add(1).mul(4).root(3).dilate(1.25).pow10().add(tempGain).log10().dilate(0.8).pow(3).div(4).sub(1)
 }
 

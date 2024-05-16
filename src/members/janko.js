@@ -35,6 +35,7 @@ const JANKO_ENG_UPS = [
         },
         get effBase() {
             let i = D(2)
+            if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[4].req)) { i = i.add(ART_ELEMENTS[0].milestones[4].effect) }
             return i
         },
         get upgDesc() {
@@ -115,6 +116,7 @@ function updateJanko() {
     tmp.energyCap = D(1000)
     tmp.energyCap = tmp.energyCap.mul(tmp.artAbsEngEff)
     tmp.energyCap = tmp.energyCap.mul(ART_ELEMENTS[2].eff)
+    if (Decimal.gte(player.art.elements[2], ART_ELEMENTS[2].milestones[0].req)) { tmp.energyCap = tmp.energyCap.mul(ART_ELEMENTS[2].milestones[0].effect) }
     if (Decimal.gte(player.art.elements[2], ART_ELEMENTS[2].milestones[2].req)) { tmp.energyCap = tmp.energyCap.mul(ART_ELEMENTS[2].milestones[2].effect) }
 
     tmp.jankoGenEff = Decimal.eq(player.janko.generators, 0) ? D(0) : Decimal.pow(2, player.janko.generators)

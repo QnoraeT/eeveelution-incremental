@@ -3,7 +3,9 @@
 const ART_ELEMENTS = [
     {
         get eff() {
-            return Decimal.max(player.art.elements[0], 0).mul(0.01).add(1).root(1.8)
+            let i = Decimal.max(player.art.elements[0], 0).mul(0.01).add(1).root(1.8)
+            if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[5].req)) { i = i.pow(ART_ELEMENTS[0].milestones[5].effect) } 
+            return i
         },
         get effDesc() {
             return `Oxygen increases how much you pat TearonQ by <b><span style="font-size: 20px">${format(this.eff, 2)}</span></b>x.`
@@ -59,6 +61,15 @@ const ART_ELEMENTS = [
                     return `Janko upgrade 2's base is increased by +<b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>.`
                 }
             },
+            {
+                req: D(2e6),
+                get effect() {
+                    return Decimal.max(player.tearonq.highTemp, 963).div(0.963).log10().sub(2)
+                },
+                get desc() {
+                    return `TearonQ's highest temperature >${format(1e3)}°C improves Oxygen's effect! (^<b><span style="font-size: 16px">${format(this.effect, 3)}</span></b>)`
+                }
+            }
         ]
     },
     {
@@ -124,7 +135,7 @@ const ART_ELEMENTS = [
             {
                 req: D(1000),
                 get effect() {
-                    return Decimal.root(player.janko.excessEnergy, 3).div(1000).add(1)
+                    return Decimal.root(player.janko.excessEnergy, 3).div(100).add(10).dilate(0.667).div(10)
                 },
                 get desc() {
                     return `Janko overflow energy increases his capacity by <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x.`
@@ -149,12 +160,12 @@ const ART_ELEMENTS = [
                 }
             },
             {
-                req: D(100000),
+                req: D(1e10),
                 get effect() {
-                    return D(2)
+                    return Decimal.max(player.art.elements[2], 10).log10().log10().mul(0.01).add(1)
                 },
                 get desc() {
-                    return `Art's nutrient gathering speed is increasd by <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x.`
+                    return `Hydrogen directly boosts Janko's energy capacity by ^<b><span style="font-size: 16px">${format(this.effect, 3)}</span></b>!`
                 }
             },
         ]
@@ -273,6 +284,7 @@ function updateArt() {
     tmp.artOverallAbsSpd = D(1)
     if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[1].req)) { tmp.artOverallAbsSpd = tmp.artOverallAbsSpd.mul(ART_ELEMENTS[0].milestones[1].effect) }
     if (Decimal.gte(player.art.elements[2], ART_ELEMENTS[2].milestones[1].req)) { tmp.artOverallAbsSpd = tmp.artOverallAbsSpd.mul(ART_ELEMENTS[2].milestones[1].effect) }
+    if (Decimal.gte(player.art.elements[3], ART_ELEMENTS[3].milestones[1].req)) { tmp.artOverallAbsSpd = tmp.artOverallAbsSpd.mul(ART_ELEMENTS[3].milestones[1].effect) }
 
     tmp.artAbsorbJSpeed = D(25)
     tmp.artAbsorbJSpeed = tmp.artAbsorbJSpeed.mul(tmp.artOverallAbsSpd)
