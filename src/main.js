@@ -85,6 +85,7 @@ function resetPlayer() {
             nutrients: D(10),
             state: 0,
             elements: [D(0), D(0), D(0), D(0), D(0)],
+            bestElements: [D(0), D(0), D(0), D(0), D(0)],
             elementSelected: 0
         }
     }
@@ -104,8 +105,12 @@ function updatePlayerData(player) {
         player.version = 1;
     }
     if (player.version === 1) {
-
-        // player.version = 2;
+        player.art.bestElements = [D(0), D(0), D(0), D(0), D(0)]
+        player.version = 2;
+    }
+    if (player.version === 2) {
+        
+        // player.version = 3;
     }
 }
 

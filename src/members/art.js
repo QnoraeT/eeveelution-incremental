@@ -4,7 +4,7 @@ const ART_ELEMENTS = [
     {
         get eff() {
             let i = Decimal.max(player.art.elements[0], 0).mul(0.01).add(1).root(1.8)
-            if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[5].req)) { i = i.pow(ART_ELEMENTS[0].milestones[5].effect) } 
+            if (getArtMilestone(0, 5)) { i = i.pow(getArtMileEff(0, 5)) } 
             return i
         },
         get effDesc() {
@@ -27,7 +27,7 @@ const ART_ELEMENTS = [
                 req: D(100),
                 get effect() {
                     let i = Decimal.max(player.janko.excessEnergy, 10).dilate(0.9).div(10).pow(0.1)
-                    if (Decimal.gte(player.art.elements[1], ART_ELEMENTS[1].milestones[0].req)) { i = i.pow(ART_ELEMENTS[1].milestones[0].effect) }
+                    if (getArtMilestone(1, 0)) { i = i.pow(getArtMileEff(1, 0)) }
                     return i
                 },
                 get desc() {
@@ -199,6 +199,28 @@ const ART_ELEMENTS = [
                     return `Art's absorption speed is <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x faster.`
                 }
             },
+            {
+                req: D(1e7),
+                get effect() {
+                    return Decimal.max(player.art.absorbed, 1e11).log10().sub(1).div(10).pow(2)
+                },
+                get desc() {
+                    return `Carbon Milestone 1 uses his best nutrients, and Absorbed Energy starting at ${format(1e11)} boosts his speed by <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x.`
+                }
+            },
+            {
+                req: D(1e9),
+                get effect() {
+                    let eff = D(1)
+                    for (let i = 0; i < ART_ELEMENTS.length; i++) {
+                        eff = eff.mul(player.art.elements[i])
+                    }
+                    return eff.root(player.art.elements.length)
+                },
+                get desc() {
+                    return `The geometric mean of all elements also speed him up by <b><span style="font-size: 16px">${format(this.effect, 2)}</span></b>x.`
+                }
+            },
         ]
     },
     {
@@ -246,6 +268,14 @@ const ART_ELEMENTS = [
     },
 ]
 
+function getArtMilestone(elm, num) {
+    return Decimal.gte(player.art.bestElements[elm], ART_ELEMENTS[elm].milestones[num].req)
+}
+
+function getArtMileEff(elm, num) {
+    return ART_ELEMENTS[elm].milestones[num].effect
+}
+
 function artHugReq(x) {
     return x.sub(1).pow(1.2).pow_base(2).mul(1000).ceil()
 }
@@ -266,39 +296,50 @@ function setupArtHTML() {
 }
 
 function updateArt() {
+    let i;
     tmp.artAbsEngEff = Decimal.max(player.art.absorbed, 0).div(1000).add(1).sqrt().mul(2.41421356237).sub(1.41421356237)
 
-    tmp.artTotalSpeed = D(1)
-    tmp.artTotalSpeed = tmp.artTotalSpeed.mul(ART_ELEMENTS[3].eff)
-    tmp.artTotalSpeed = tmp.artTotalSpeed.mul(JANKO_ENG_UPS[3].eff)
-    if (Decimal.gte(player.art.elements[3], ART_ELEMENTS[3].milestones[0].req)) { tmp.artTotalSpeed = tmp.artTotalSpeed.mul(ART_ELEMENTS[3].milestones[0].effect) }
+    i = D(1)
+    i = i.mul(ART_ELEMENTS[3].eff)
+    i = i.mul(JANKO_ENG_UPS[3].eff)
+    if (getArtMilestone(3, 0)) { i = i.mul(getArtMileEff(3, 0)) }
+    tmp.artTotalSpeed = i
 
-    tmp.artNConversionGper = D(1)
-    if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[0].req)) { tmp.artNConversionGper = tmp.artNConversionGper.mul(ART_ELEMENTS[0].milestones[0].effect) }
-    tmp.artNConversionJper = D(100)
+    i = D(1)
+    if (getArtMilestone(0, 0)) { i = i.mul(getArtMileEff(0, 0)) }
+    tmp.artNConversionGper = i
 
-    tmp.artNConversionSpeedJ = D(10)
-    tmp.artNConversionSpeedJ = tmp.artNConversionSpeedJ.mul(JANKO_ENG_UPS[2].eff)
-    tmp.artNConversionSpeedJ = tmp.artNConversionSpeedJ.mul(tmp.artTotalSpeed)
+    i = D(100)
+    tmp.artNConversionJper = i
+
+    i = D(10)
+    i = i.mul(JANKO_ENG_UPS[2].eff)
+    i = i.mul(tmp.artTotalSpeed)
+    tmp.artNConversionSpeedJ = i
     
-    tmp.artOverallAbsSpd = D(1)
-    if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[1].req)) { tmp.artOverallAbsSpd = tmp.artOverallAbsSpd.mul(ART_ELEMENTS[0].milestones[1].effect) }
-    if (Decimal.gte(player.art.elements[2], ART_ELEMENTS[2].milestones[1].req)) { tmp.artOverallAbsSpd = tmp.artOverallAbsSpd.mul(ART_ELEMENTS[2].milestones[1].effect) }
-    if (Decimal.gte(player.art.elements[3], ART_ELEMENTS[3].milestones[1].req)) { tmp.artOverallAbsSpd = tmp.artOverallAbsSpd.mul(ART_ELEMENTS[3].milestones[1].effect) }
+    i = D(1)
+    if (getArtMilestone(0, 1)) { i = i.mul(getArtMileEff(0, 1)) }
+    if (getArtMilestone(2, 1)) { i = i.mul(getArtMileEff(2, 1)) }
+    if (getArtMilestone(3, 1)) { i = i.mul(getArtMileEff(3, 1)) }
+    tmp.artOverallAbsSpd = i
 
-    tmp.artAbsorbJSpeed = D(25)
-    tmp.artAbsorbJSpeed = tmp.artAbsorbJSpeed.mul(tmp.artOverallAbsSpd)
-    tmp.artAbsorbJSpeed = tmp.artAbsorbJSpeed.mul(tmp.artTotalSpeed)
+    i = D(25)
+    i = i.mul(tmp.artOverallAbsSpd)
+    i = i.mul(tmp.artTotalSpeed)
+    tmp.artAbsorbJSpeed = i
 
-    tmp.artAbsorbNutrientLossSpeed = D(0.5)
-    tmp.artAbsorbNutrientLossSpeed = tmp.artAbsorbNutrientLossSpeed.mul(tmp.artOverallAbsSpd)
-    tmp.artAbsorbNutrientLossSpeed = tmp.artAbsorbNutrientLossSpeed.mul(tmp.artTotalSpeed)
+    i = D(0.5)
+    i = i.mul(tmp.artOverallAbsSpd)
+    i = i.mul(tmp.artTotalSpeed)
+    tmp.artAbsorbNutrientLossSpeed = i
     
-    tmp.artNutrientExtractSpeed = [D(2), D(2), D(1), D(5), D(2.5)][player.art.elementSelected]
-    tmp.artNutrientExtractSpeed = tmp.artNutrientExtractSpeed.mul(tmp.artTotalSpeed)
+    i = [D(2), D(2), D(1), D(5), D(2.5)][player.art.elementSelected]
+    i = i.mul(tmp.artTotalSpeed)
+    tmp.artNutrientExtractSpeed = i
 
-    tmp.artExtractNutrientLoss = [D(2), D(3), D(5), D(7), D(10)][player.art.elementSelected]
-    tmp.artExtractNutrientLoss = tmp.artExtractNutrientLoss.mul(tmp.artTotalSpeed)
+    i = [D(2), D(3), D(5), D(7), D(10)][player.art.elementSelected]
+    i = i.mul(tmp.artTotalSpeed)
+    tmp.artExtractNutrientLoss = i
 
     if (player.art.state === 1) {
         let ratio = Decimal.div(player.janko.energy, tmp.artNConversionSpeedJ).min(1).mul(otherGameStuffIg.gameDelta)
@@ -325,19 +366,22 @@ function updateArt() {
     el("art").style.display = Decimal.gte(player.janko.upgrades[0], 1) ? "flex" : "none";
     el("artEngAbs").innerText = format(player.art.absorbed, 1)
     el("absEngAbsEff").innerText = format(tmp.artAbsEngEff, 2)
+    el("artAbsorbGet").style["background-color"] = player.art.state === 2 ? "#008010" : "#004704"
+    el("artAbsorbJSpeed").innerText = format(tmp.artAbsorbJSpeed, 1)
+
     el("artNutrientAmt").innerText = format(player.art.nutrients, 2)
     el("artNutrientConvG").innerText = format(tmp.artNConversionGper, 2)
     el("artNutrientConvJ").innerText = format(tmp.artNConversionJper, 1)
-    el("artAbsorbJSpeed").innerText = format(tmp.artAbsorbJSpeed, 1)
     el("artNutrientLossSpeed").innerText = format(tmp.artAbsorbNutrientLossSpeed, 2)
     el("artNutrientConvSpeed").innerText = format(tmp.artNConversionSpeedJ, 1)
     el("artNutrientGet").style["background-color"] = player.art.state === 1 ? "#008010" : "#004704"
-    el("artAbsorbGet").style["background-color"] = player.art.state === 2 ? "#008010" : "#004704"
+
+    el("artElmEff").innerHTML = ART_ELEMENTS[player.art.elementSelected].effDesc
     el("artElmEffName").innerText = ART_ELEMENTS[player.art.elementSelected].name
+
     el("artNutrientTab").style["background-color"] = ART_ELEMENTS[player.art.elementSelected].bgcolor
     el("artNutrientTab").style.color = ART_ELEMENTS[player.art.elementSelected].color
     el("artNutrientTab").style.border = `3px solid ${ART_ELEMENTS[player.art.elementSelected].color}`
-    el("artElmEff").innerHTML = ART_ELEMENTS[player.art.elementSelected].effDesc
     el("artNutrientsTab").style.display = Decimal.gte(player.janko.upgrades[2], 1) ? "flex" : "none";
     el("artExtractNutrient").style.color = ART_ELEMENTS[player.art.elementSelected].color
     el("artExtractNutrient").style.border = `3px solid ${ART_ELEMENTS[player.art.elementSelected].color}`
@@ -345,7 +389,7 @@ function updateArt() {
     el("artExtrNutrient").innerText = ART_ELEMENTS[player.art.elementSelected].name
     el("artNutrientExtrLossSpeed").innerText = format(tmp.artExtractNutrientLoss, 1)
     el("artExtrGainSpeed").innerText = format(tmp.artNutrientExtractSpeed, 1)
-    //  Rate: -<span id="artNutrientExtrLossSpeed"></span>g/s, +<span id="artExtrGainSpeed"></span>g/s
+
     for (let i = 0; i < ART_ELEMENTS.length; i++) {
         el("artElm" + i).innerText = format(player.art.elements[i], 2)
         el("artElmAll" + i).style.display = Decimal.gte(player.janko.upgrades[2], i + 1) ? "" : "none";
@@ -359,7 +403,7 @@ function updateArt() {
                 }
                 el("artElmMileReq" + j).innerHTML = req
                 el("artElmMileDesc" + j).innerHTML = ART_ELEMENTS[i].milestones[j].desc
-                el("artElmMilestone" + j).style["background-color"] = colorChange(ART_ELEMENTS[player.art.elementSelected].bgcolor, Decimal.gte(player.art.elements[i], ART_ELEMENTS[i].milestones[j].req) ? 1.5 : 1.0, 1.0)
+                el("artElmMilestone" + j).style["background-color"] = colorChange(ART_ELEMENTS[player.art.elementSelected].bgcolor, getArtMilestone(i, j) ? 1.5 : 1.0, 1.0)
             }
         }
     }

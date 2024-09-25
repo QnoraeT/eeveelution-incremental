@@ -35,7 +35,7 @@ const JANKO_ENG_UPS = [
         },
         get effBase() {
             let i = D(2)
-            if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[4].req)) { i = i.add(ART_ELEMENTS[0].milestones[4].effect) }
+            if (getArtMilestone(0, 4)) { i = i.add(getArtMileEff(0, 4)) }
             return i
         },
         get upgDesc() {
@@ -92,7 +92,7 @@ const JANKO_ENG_UPS = [
             return `Motivate Art, which makes him <b><span style="font-size: 16px">${format(this.effBase, 1)}</span></b>x faster! (Total: ${format(this.eff, 1)}x)`
         },
         get show() {
-            return Decimal.gte(player.art.elements[1], ART_ELEMENTS[1].milestones[0].req)
+            return getArtMilestone(1, 0)
         }
     },
 ]
@@ -112,17 +112,19 @@ function setupJankoHTML() {
 }
 
 function updateJanko() {
-    let table
-    tmp.energyCap = D(1000)
-    tmp.energyCap = tmp.energyCap.mul(tmp.artAbsEngEff)
-    tmp.energyCap = tmp.energyCap.mul(ART_ELEMENTS[2].eff)
-    if (Decimal.gte(player.art.elements[2], ART_ELEMENTS[2].milestones[0].req)) { tmp.energyCap = tmp.energyCap.mul(ART_ELEMENTS[2].milestones[0].effect) }
-    if (Decimal.gte(player.art.elements[2], ART_ELEMENTS[2].milestones[2].req)) { tmp.energyCap = tmp.energyCap.mul(ART_ELEMENTS[2].milestones[2].effect) }
+    let table, i
+    i = D(1000)
+    i = i.mul(tmp.artAbsEngEff)
+    i = i.mul(ART_ELEMENTS[2].eff)
+    if (getArtMilestone(2, 0)) { i = i.mul(getArtMileEff(2, 0)) }
+    if (getArtMilestone(2, 2)) { i = i.mul(getArtMileEff(2, 2)) }
+    tmp.energyCap = i
 
     tmp.jankoGenEff = Decimal.eq(player.janko.generators, 0) ? D(0) : Decimal.pow(2, player.janko.generators)
-    tmp.energyGen = tmp.jankoGenEff.mul(player.tearonq.temperature).div(100)
-    tmp.energyGen = tmp.energyGen.mul(ART_ELEMENTS[1].eff)
-    if (Decimal.gte(player.art.elements[1], ART_ELEMENTS[1].milestones[1].req)) { tmp.energyGen = tmp.energyGen.mul(ART_ELEMENTS[1].milestones[1].effect) }
+    i = tmp.jankoGenEff.mul(player.tearonq.temperature).div(100)
+    i = i.mul(ART_ELEMENTS[1].eff)
+    if (getArtMilestone(1, 1)) { i = i.mul(getArtMileEff(1, 1)) }
+    tmp.energyGen = i
 
     player.janko.energy = Decimal.add(player.janko.energy, tmp.energyGen.mul(otherGameStuffIg.gameDelta))
     if (player.janko.energy.gte(tmp.energyCap)) {
