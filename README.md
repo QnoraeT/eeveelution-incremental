@@ -6,4 +6,4 @@ To-do:
 * Improve visuals
 
 * GAME LINK:
-* https://qnoraet.github.io/evb-incremental/index.html
+* https://qnoraet.github.io/eeveelution-incremental/index.html
