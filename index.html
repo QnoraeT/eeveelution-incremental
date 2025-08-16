@@ -10,84 +10,82 @@
     <script src="src/utils/format.js"></script>
 
     <script src="src/main.js"></script>
-    <script src="src/members/polly.js"></script>
-    <script src="src/members/art.js"></script>
-    <script src="src/members/janko.js"></script>
+    <script src="src/members/vaporeon.js"></script>
+    <script src="src/members/leafeon.js"></script>
+    <script src="src/members/jolteon.js"></script>
     <script src="src/members/tearonq.js"></script>
 </head>
 <body onload="loadGame()" style="background-color: #000;">
     <div style="display: flex; flex-direction: column;">
-        <div id="story" style="display: flex; flex-direction: column; align-items: center;">
-            <button onclick="nextStory()" id="nextStory" style="width: 135px; height: 40px; font-family: Tinos; color: #fff; background-color: #222; font-size: 20px; border: 3px solid #444" onclick="nextStory()">Next</button>
+        <div id="story" class="flex-vertical">
+            <button onclick="nextStory()" id="nextStory" style="width: 135px; height: 40px; background-color: #222; font-size: 20px; border: 3px solid #444" onclick="nextStory()">Next</button>
             <div id="storyThing"></div>
         </div>
-        <div id="gameplay" style="display: flex; justify-content: center; flex-direction: row; align-items: center; flex-wrap: wrap">
-            <div id="tearonq" style="margin: 2px; padding: 8px; display: flex; flex-direction: column; align-items: center; font-size: 16px; border: 3px solid #ff3c00; color: #ff3c00; background-color: #501300;">
-                <b><span style="font-size: 20px">TearonQ, the Flareon</span></b><br>
-                <span id="tearonqLvAll">You are level <b><span id="tearonqLv" style="font-size: 20px"></span></b>. (<span id="tearonqXPr"></span> / <span id="tearonqMaxXP"></span>)</span>
+        <div id="gameplay" class="flex-horizontal" style="flex-wrap: wrap">
+            <div id="tearonq" class="flex-vertical font whiteText tearonqText" style="margin: 2px; padding: 8px; font-size: 16px; border: 3px solid #ff3c00; background-color: #501300;">
+                <b><span style="font-size: 20px"><span class="tqName"></span>, the Flareon</span></b><br>
+                <span id="tearonqLvAll"><span class="tqName"></span> is level <b><span id="tearonqLv" style="font-size: 20px"></span></b>. (<span id="tearonqXPr"></span> / <span id="tearonqMaxXP"></span>)</span>
                 <span id="tearonqLvNextAll">Next feature at level <b><span id="tearonqLvNext" style="font-size: 20px"></span></b>.</span>
-                <span id="tearonqTempAll"><span id="uTempTQ"></span> currently at <b><span id="tearonqTemp" style="font-size: 20px;"></span></b>°C.</span>
-                <span id="tearonqFrenAll"><span id="uFrenTQ"></span> a friendship score of <b><span id="tearonqFren" style="font-size: 20px;"></span></b>!</span><br>
-                <span id="tearonqPatAll">You have pet <span id="uPetTQ"></span> <b><span id="tearonqPat" style="font-size: 20px;"></span></b> times.</span>
+                <span id="tearonqTempAll"><span class="tqPronoun0 caps"></span> <span class="tqPronoun3"></span> currently at <b><span id="tearonqTemp" style="font-size: 20px;"></span></b>°C.</span>
+                <span id="tearonqFrenAll"><span class="tqPronoun0 caps"></span> <span class="tqPronoun4"></span> a friendship score of <b><span id="tearonqFren" style="font-size: 20px;"></span></b>!</span><br>
+                <span id="tearonqPatAll">You have pet <span class="tqName"></span> <b><span id="tearonqPat" style="font-size: 20px;"></span></b> times.</span>
                 <span id="tearonqMemAll">You have <span id="tearonqMem"></span>.</span>
-                <button onclick="petTearonq()" id="petTearonq" class="tearonqButton" style="font-family: Tinos;">
-                    Pet TearonQ <span id="tearonqPatAmt"></span>.
+                <button onclick="petTearonq()" id="petTearonq" class="tearonqButton font">
+                    Pet <span class="tqName"></span> <span id="tearonqPatAmt"></span>.
                 </button>
-                <button onclick="getTearonqMember()" id="getTearonqMember" class="tearonqButton" style="font-family: Tinos; color: #ff3c00;">
+                <button onclick="getTearonqMember()" id="getTearonqMember" class="tearonqButton font">
                     Get a member.<br>
                     Cost: <span id="tearonqMemPatCost"></span> pets.
                 </button>
             </div>
-            <div id="janko" style="margin: 2px; padding: 8px; display: flex; flex-direction: column; align-items: center; font-size: 16px; border: 3px solid #ffee00; color: #fbff00; background-color: #6e6d20;">
-                <b><span style="font-size: 20px">Janko, the Pichu</span></b><br>
-                <span id="jankoGenAll">You have <b><span id="jankoGen" style="font-size: 20px"></span></b> generators.</span>
-                <span id="jankoEngAll">Janko currently storing <b><span id="jankoEng" style="font-size: 20px"></span></b> / <b><span id="jankoEngCap" style="font-size: 20px"></span></b>J of energy.</span>
-                <span id="jankoEngOvAll">He has overflowed <b><span id="jankoEngOv" style="font-size: 20px"></span></b>J of energy, making you pat TearonQ <b><span id="jankoEngOvEff" style="font-size: 20px"></span></b>x more.</span>
-                <span id="jankoEngGainAll">He is currently generating <b><span id="jankoEngGain" style="font-size: 20px;"></span></b>J per second.</span>
-                <button onclick="buyGenerator()" id="genJanko" style="font-family: Tinos; color: #ffee00; font-size: 20px; border: 3px solid #ffee00; background-color: #6e6d20;">
+            <div id="jolty" class="flex-vertical font jolteonText" style="margin: 2px; padding: 8px; font-size: 16px; border: 3px solid #ffee00; background-color: #6e6d20;">
+                <b><span style="font-size: 20px"><span class="joltName"></span>, the Jolteon</span></b><br>
+                <span id="joltyGenAll">You have <b><span id="joltyGen" style="font-size: 20px"></span></b> generators.</span>
+                <span id="joltyEngAll"><span class="joltName"></span> currently storing <b><span id="joltyEng" style="font-size: 20px"></span></b> / <b><span id="joltyEngCap" style="font-size: 20px"></span></b>J of energy.</span>
+                <span id="joltyEngOvAll"><span class="joltName"></span> has overflowed <b><span id="joltyEngOv" style="font-size: 20px"></span></b>J of energy, making you pat <span class="tqName"></span> <b><span id="joltyEngOvEff" style="font-size: 20px"></span></b>x more.</span>
+                <span id="joltyEngGainAll"><span class="joltPronoun0 caps"></span> <span class="joltPronoun3"></span> currently generating <b><span id="joltyEngGain" style="font-size: 20px;"></span></b>J per second.</span>
+                <button onclick="buyGenerator()" id="genJolty" class="font jolteonText" style="font-size: 20px; border: 3px solid #ffee00; background-color: #6e6d20;">
                     Get a generator.
-                    Cost: <span id="jankoGenPatCost"></span> pets.
+                    Cost: <span id="joltyGenPatCost"></span> pets.
                 </button>
-                <div id="jankoUpgs" style="width: 600px; display: flex; justify-content: center; flex-direction: row; align-items: center; flex-wrap: wrap">
-                    <!-- autogenerated in janko.js -->
+                <div id="joltyUpgs" class="flex-horizontal" style="width: 80%; flex-wrap: wrap">
+                    <!-- autogenerated in jolteon.js -->
                 </div>
             </div>
-            <div id="art" style="margin: 2px; padding: 8px; display: flex; flex-direction: row; align-items: center; border: 3px solid #00ff0d; background-color: #004704;">
-                <div id="artMain" style="margin: 2px; padding: 8px; display: flex; flex-direction: column; align-items: center; font-size: 16px; border: 3px solid #00ff0d; color: #00ff0d;">
-                    <b><span style="font-size: 20px">Art, the Leafeon</span></b><br>
-                    <span id="artEngAbsAll">Art has absorbed <b><span id="artEngAbs" style="font-size: 20px"></span></b>J of energy.</span>
-                    <span id="artEngAbsEffAll">This makes Janko be able to store <b><span id="absEngAbsEff" style="font-size: 20px"></span></b>x more energy.</span>
-                    <span id="artNutrientAll">Art currently has <b><span id="artNutrientAmt" style="font-size: 20px"></span></b>g of nutrients.</span>
-                    <button onclick="player.art.state = player.art.state === 1 ? 0 : 1" id="artNutrientGet" style="font-family: Tinos; color: #00ff0d; font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
+            <div id="leaf" class="flex-horizontal font" style="margin: 2px; padding: 4px; border: 3px solid #00ff0d; background-color: #004704;">
+                <div id="leafMain" class="flex-vertical font leafeonText" style="margin: 2px; padding: 8px; font-size: 16px; border: 3px solid #00ff0d;">
+                    <b><span style="font-size: 20px"><span class="leafName"></span>, the Leafeon</span></b><br>
+                    <span id="leafEngAbsAll"><span class="leafName"></span> has absorbed <b><span id="leafEngAbs" style="font-size: 20px"></span></b>J of energy.</span>
+                    <span id="leafEngAbsEffAll">This makes <span class="joltName"></span> be able to store <b><span id="absEngAbsEff" style="font-size: 20px"></span></b>x more energy.</span>
+                    <span id="leafNutrientAll"><span class="leafName"></span> currently has <b><span id="leafNutrientAmt" style="font-size: 20px"></span></b>g of nutrients.</span>
+                    <button onclick="player.leafeon.state = player.leafeon.state === 1 ? 0 : 1" id="leafNutrientGet" class="font leafeonText" style="font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
                         Try to get nutrients using energy.<br>
-                        Conversion: <span id="artNutrientConvG"></span>g/<span id="artNutrientConvJ"></span> J<br>
-                        Rate: <span id="artNutrientConvSpeed"></span> J/s
+                        Conversion: <span id="leafNutrientConvG"></span>g/<span id="leafNutrientConvJ"></span> J<br>
+                        Rate: <span id="leafNutrientConvSpeed"></span> J/s
                     </button>
-                    <button onclick="player.art.state = player.art.state === 2 ? 0 : 2" id="artAbsorbGet" style="font-family: Tinos; color: #00ff0d; font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
+                    <button onclick="player.leafeon.state = player.leafeon.state === 2 ? 0 : 2" id="leafAbsorbGet" class="font leafeonText" style="font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
                         Attempt to absorb energy.<br>
-                        Rate: <span id="artAbsorbJSpeed"></span> J/s, -<span id="artNutrientLossSpeed"></span>g/s
+                        Rate: <span id="leafAbsorbJSpeed"></span> J/s, -<span id="leafNutrientLossSpeed"></span>g/s
                     </button>
                 </div>
-                <div id="artNutrientsTab" style="display: flex; flex-direction: column; align-items: center;">
-                    <div id="artNutrients" style="margin: 2px; padding: 8px; display: flex; flex-direction: column; align-items: center; font-size: 16px; border: 3px solid #00ff0d; color: #00ff0d; background-color: #004704;">
-                        <!-- autogenerated in art.js -->
+                <div id="leafNutrientsTab" class="flex-vertical font leafeonText">
+                    <div id="leafNutrients" class="flex-vertical font" style="margin: 2px; padding: 8px; font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
+                        <!-- autogenerated in leafeon.js -->
                     </div>
-                    <div id="artNutrientTab" style="margin: 2px; padding: 8px; display: flex; flex-direction: column; align-items: center; font-size: 16px; border: 3px solid #00ff0d; color: #00ff0d; background-color: #004704;">
-                        <b><span id="artElmEffName" style="font-size: 20px"></span></b><br>
-                        <div id="artElmEff" style="font-family: Tinos;"></div>
-                        <button onclick="artExtractNutrients()" id="artExtractNutrient" style="font-family: Tinos; color: #00ff0d; font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
-                            Extract <span id="artExtrNutrient"></span>.<br>
-                            Rate: -<span id="artNutrientExtrLossSpeed"></span>g/s, +<span id="artExtrGainSpeed"></span>g/s
-                        </button><br>
-                        <div id="artElmMilestones" style="font-family: Tinos; display: flex; flex-direction: column; align-items: center; ">
-                            <!-- autogenerated in art.js -->
-                        </div>
+                    <div id="leafNutrientTab">
+                        <!-- autogenerated in leafeon.js -->
                     </div>
                 </div>
             </div>
-            <!-- <div id="trust" style="margin: 2px; padding: 8px; display: flex; flex-direction: row; align-items: center; border: 3px solid #868686; background-color: #1b1b1b;">
-
-            </div> -->
+            <div id="vaporeon" class="flex-vertical font vaporeonText" style="margin: 2px; padding: 4px; border: 3px solid #0080ff; background-color: #002040;">
+                <b><span style="font-size: 20px"><span class="vappyName"></span>, the Vaporeon</span></b>
+                <span><span class="vappyPronoun0 caps"></span> has <b><span id="vappyWaterAmt" style="font-size: 20px"></span></b>g of H<sub>2</sub>O.</span>
+                <span><span class="vappyName"></span>'s water also grants her <b><span id="vappyFlowAmt" style="font-size: 20px"></span></b>u of flow (<span id="vappyFlowGen" style="font-size: 20px"></span>/s), which helps <span class="leafName"></span> extract Oxygen and Hydrogen <b><span id="vappyFlowEff" style="font-size: 20px"></span></b>x faster.</span>
+                <button onclick="vappyCreateWater()" id="vappyMakeWater" class="font vaporeonText" style="font-size: 16px; border: 3px solid #0080ff; background-color: #002040;">
+                    Extract H<sub>2</sub>0.<br>
+                    Rate: +<span id="vappyWaterGen"></span>g of H<sub>2</sub>0/s, -<span id="vappyWaterHydrogenCost"></span>g of Hydrogen/s, -<span id="vappyWaterOxygenCost"></span>g of Oxygen/s, -<span id="vappyWaterEnergyCost"></span>J/s
+                </button><br>
+            </div>
         </div>
     </div>
 </body>

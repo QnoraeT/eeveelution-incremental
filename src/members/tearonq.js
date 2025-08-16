@@ -2,10 +2,12 @@
 const TEARONQ_FEATURE_REQ = [
     D(2),
     D(5),
+    D(40),
+    D(50),
     D(1e308)
 ]
 
-function updateTearonq() {
+function updateTearonQ_Game() {
     tmp.tearonqMemberCost = smoothExp(D(1.05), smoothPoly(D(player.tearonq.members), D(1.2), D(200), false), false).mul(10).add(20)
     tmp.tearonqMemberTarget = smoothPoly(smoothExp(D(1.05), Decimal.sub(player.tearonq.pats, 20).div(10), true), D(1.2), D(200), true)
 
@@ -17,16 +19,16 @@ function updateTearonq() {
     tmp.tearonqPPS = D(1)
 
     let pow = D(1)
-    if (Decimal.gte(player.art.elements[1], ART_ELEMENTS[1].milestones[2].req)) { pow = pow.mul(ART_ELEMENTS[1].milestones[2].effect) }
+    if (Decimal.gte(player.leafeon.elements[1], LEAF_ELEMENTS[1].milestones[2].req)) { pow = pow.mul(LEAF_ELEMENTS[1].milestones[2].effect) }
     tmp.tearonqPPS = tmp.tearonqPPS.mul(Decimal.add(player.tearonq.members, 1).pow(pow))
 
     tmp.tearonqPPS = tmp.tearonqPPS.mul(tmp.energyOverflowEff)
-    if (Decimal.gte(player.janko.upgrades[0], 1)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(JANKO_ENG_UPS[0].eff) }
-    if (Decimal.gte(player.janko.upgrades[1], 1)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(JANKO_ENG_UPS[1].eff) }
-    tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].eff)
-    if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[2].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].milestones[2].effect) }
-    if (Decimal.gte(player.art.elements[0], ART_ELEMENTS[0].milestones[3].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[0].milestones[3].effect) }
-    if (Decimal.gte(player.art.elements[4], ART_ELEMENTS[4].milestones[1].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(ART_ELEMENTS[4].milestones[1].effect) }
+    if (Decimal.gte(player.jolteon.upgrades[0], 1)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(JOLTY_ENG_UPS[0].eff) }
+    if (Decimal.gte(player.jolteon.upgrades[1], 1)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(JOLTY_ENG_UPS[1].eff) }
+    tmp.tearonqPPS = tmp.tearonqPPS.mul(LEAF_ELEMENTS[0].eff)
+    if (Decimal.gte(player.leafeon.elements[0], LEAF_ELEMENTS[0].milestones[2].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(LEAF_ELEMENTS[0].milestones[2].effect) }
+    if (Decimal.gte(player.leafeon.elements[0], LEAF_ELEMENTS[0].milestones[3].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(LEAF_ELEMENTS[0].milestones[3].effect) }
+    if (Decimal.gte(player.leafeon.elements[4], LEAF_ELEMENTS[4].milestones[1].req)) { tmp.tearonqPPS = tmp.tearonqPPS.mul(LEAF_ELEMENTS[4].milestones[1].effect) }
 
     tmp.tearonqLevelBase = D(19)
     tmp.tearonqLevel = calcTearonqLevel(player.tearonq.totalPats, true).floor().max(player.tearonq.bestLv)
@@ -42,7 +44,9 @@ function updateTearonq() {
             }
         }
     }
+}
 
+function updateTearonQ_HTML() {
     el("tearonqPat").innerText = format(player.tearonq.pats)
     el("tearonqLv").innerText = format(tmp.tearonqLevel)
     el("tearonqXPr").innerText = format(tmp.tearonqXP)
@@ -56,9 +60,6 @@ function updateTearonq() {
     el("tearonqMemAll").style.display = Decimal.gte(tmp.tearonqLevel, 2) ? "" : "none";
     el("tearonqTempAll").style.display = Decimal.gte(tmp.tearonqLevel, 5) ? "" : "none";
     el("tearonqFrenAll").style.display = Decimal.gte(tmp.tearonqLevel, 999) ? "" : "none";
-    el("uPetTQ").innerText = pronouns(player.tearonq.gender)[1]
-    el("uTempTQ").innerText = pronouns(player.tearonq.gender)[0] === "they" ? `${capitalizeFirstLetter(pronouns(player.tearonq.gender)[0])} are` : `${capitalizeFirstLetter(pronouns(player.tearonq.gender)[0])} is`
-    el("uFrenTQ").innerText = pronouns(player.tearonq.gender)[0] === "they" ? `${capitalizeFirstLetter(pronouns(player.tearonq.gender)[0])} have` : `${capitalizeFirstLetter(pronouns(player.tearonq.gender)[0])} has`
 }
 
 function calcTearonqLevel(x, inv = false) {
@@ -72,9 +73,9 @@ function petTearonq() {
     player.tearonq.pats = Decimal.add(player.tearonq.pats, tmp.tearonqPPS)
     player.tearonq.totalPats = Decimal.add(player.tearonq.totalPats, tmp.tearonqPPS)
     let tempGain = tmp.tearonqPPS
-    if (Decimal.gte(player.art.elements[1], ART_ELEMENTS[1].milestones[3].req)) { tempGain = tempGain.mul(ART_ELEMENTS[1].milestones[3].effect) }
-    if (Decimal.gte(player.art.elements[4], ART_ELEMENTS[4].milestones[0].req)) { tempGain = tempGain.mul(ART_ELEMENTS[4].milestones[0].effect) }
-    if (Decimal.gte(player.art.elements[4], ART_ELEMENTS[4].milestones[1].req)) { tempGain = tempGain.mul(ART_ELEMENTS[4].milestones[1].effect) }
+    if (Decimal.gte(player.leafeon.elements[1], LEAF_ELEMENTS[1].milestones[3].req)) { tempGain = tempGain.mul(LEAF_ELEMENTS[1].milestones[3].effect) }
+    if (Decimal.gte(player.leafeon.elements[4], LEAF_ELEMENTS[4].milestones[0].req)) { tempGain = tempGain.mul(LEAF_ELEMENTS[4].milestones[0].effect) }
+    if (Decimal.gte(player.leafeon.elements[4], LEAF_ELEMENTS[4].milestones[1].req)) { tempGain = tempGain.mul(LEAF_ELEMENTS[4].milestones[1].effect) }
     player.tearonq.temperature = Decimal.max(player.tearonq.temperature, 0).add(1).mul(4).root(3).dilate(1.25).pow10().add(tempGain).log10().dilate(0.8).pow(3).div(4).sub(1)
 }
 

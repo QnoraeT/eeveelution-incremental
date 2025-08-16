@@ -1,3 +1,43 @@
+@font-face {
+    font-family: 'Inconsolata-Bold';
+    src: url('fonts/Inconsolata-Bold.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+         url('fonts/Inconsolata-Bold.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}  
+
+.flex-vertical {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+}
+
+.flex-horizontal {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: center;
+}
+
+.font {
+    /* font-family: "Trebuchet MS", sans-serif; */
+    font-family: 'Inconsolata-Bold';
+    text-align: center;
+}
+
+.tearonqText {
+    color: #ff9a7b;
+}
+
+.jolteonText {
+    color: #fff673; 
+}
+
+.leafeonText {
+    color: #76ff76; 
+}
+
+.vaporeonText {
+    color: #7abcff; 
+}
+
 .tearonqButton {
     color: #ff3c00; 
     font-size: 20px; 
@@ -10,14 +50,14 @@
     background-color: #6d1900;
 }
 
-.jankoButton {
+.joltyButton {
     color: #ffee00; 
     font-size: 20px; 
     border: 3px solid #ffee00; 
     background-color: #6e6d20;
 }
 
-.jankoButton:hover {
+.joltyButton:hover {
     color: #ffee00; 
     font-size: 20px; 
     border: 3px solid #ffee00; 
