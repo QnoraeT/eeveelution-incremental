@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-	<title>EVB Incremental !!</title>
+	<title>Eeveelution Incremental !!</title>
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="styles.css" rel="stylesheet" type="text/css">
@@ -18,7 +18,7 @@
 <body onload="loadGame()" style="background-color: #000;">
     <div style="display: flex; flex-direction: column;">
         <div id="story" class="flex-vertical">
-            <button onclick="nextStory()" id="nextStory" style="width: 135px; height: 40px; background-color: #222; font-size: 20px; border: 3px solid #444" onclick="nextStory()">Next</button>
+            <button onclick="nextStory()" id="nextStory" class="font" style="width: 135px; height: 40px; background-color: #222; font-size: 20px; border: 3px solid #444; color: #fff" onclick="nextStory()">Next</button>
             <div id="storyThing"></div>
         </div>
         <div id="gameplay" class="flex-horizontal" style="flex-wrap: wrap">
@@ -41,9 +41,9 @@
             <div id="jolty" class="flex-vertical font jolteonText" style="margin: 2px; padding: 8px; font-size: 16px; border: 3px solid #ffee00; background-color: #6e6d20;">
                 <b><span style="font-size: 20px"><span class="joltName"></span>, the Jolteon</span></b><br>
                 <span id="joltyGenAll">You have <b><span id="joltyGen" style="font-size: 20px"></span></b> generators.</span>
-                <span id="joltyEngAll"><span class="joltName"></span> currently storing <b><span id="joltyEng" style="font-size: 20px"></span></b> / <b><span id="joltyEngCap" style="font-size: 20px"></span></b>J of energy.</span>
+                <span id="joltyEngAll"><span class="joltName"></span> is currently storing <b><span id="joltyEng" style="font-size: 20px"></span></b> / <b><span id="joltyEngCap" style="font-size: 20px"></span></b>J of energy.</span>
                 <span id="joltyEngOvAll"><span class="joltName"></span> has overflowed <b><span id="joltyEngOv" style="font-size: 20px"></span></b>J of energy, making you pat <span class="tqName"></span> <b><span id="joltyEngOvEff" style="font-size: 20px"></span></b>x more.</span>
-                <span id="joltyEngGainAll"><span class="joltPronoun0 caps"></span> <span class="joltPronoun3"></span> currently generating <b><span id="joltyEngGain" style="font-size: 20px;"></span></b>J per second.</span>
+                <span id="joltyEngGainAll"><span class="joltPronoun0 caps"></span> <span class="joltPronoun3"></span> currently generating with a speed of <b><span id="joltyEngGain" style="font-size: 20px;"></span></b> Watts.</span>
                 <button onclick="buyGenerator()" id="genJolty" class="font jolteonText" style="font-size: 20px; border: 3px solid #ffee00; background-color: #6e6d20;">
                     Get a generator.
                     Cost: <span id="joltyGenPatCost"></span> pets.
@@ -56,16 +56,17 @@
                 <div id="leafMain" class="flex-vertical font leafeonText" style="margin: 2px; padding: 8px; font-size: 16px; border: 3px solid #00ff0d;">
                     <b><span style="font-size: 20px"><span class="leafName"></span>, the Leafeon</span></b><br>
                     <span id="leafEngAbsAll"><span class="leafName"></span> has absorbed <b><span id="leafEngAbs" style="font-size: 20px"></span></b>J of energy.</span>
-                    <span id="leafEngAbsEffAll">This makes <span class="joltName"></span> be able to store <b><span id="absEngAbsEff" style="font-size: 20px"></span></b>x more energy.</span>
+                    <span id="leafEngAbsEffAll">This makes <span class="joltName"></span> able to store <b><span id="absEngAbsEff" style="font-size: 20px"></span></b>x more energy.</span>
                     <span id="leafNutrientAll"><span class="leafName"></span> currently has <b><span id="leafNutrientAmt" style="font-size: 20px"></span></b>g of nutrients.</span>
                     <button onclick="player.leafeon.state = player.leafeon.state === 1 ? 0 : 1" id="leafNutrientGet" class="font leafeonText" style="font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
-                        Try to get nutrients using energy.<br>
-                        Conversion: <span id="leafNutrientConvG"></span>g/<span id="leafNutrientConvJ"></span> J<br>
-                        Rate: <span id="leafNutrientConvSpeed"></span> J/s
+                        Try to gather nutrients using energy.<br>
+                        Conversion: <span id="leafNutrientConvJ"></span> J -> <span id="leafNutrientConvG"></span>g Nutrients<br>
+                        Rate: <span id="leafNutrientConvSpeedJ"></span> W -> <span id="leafNutrientConvSpeedG"></span>g Nutrients/s
                     </button>
                     <button onclick="player.leafeon.state = player.leafeon.state === 2 ? 0 : 2" id="leafAbsorbGet" class="font leafeonText" style="font-size: 16px; border: 3px solid #00ff0d; background-color: #004704;">
                         Attempt to absorb energy.<br>
-                        Rate: <span id="leafAbsorbJSpeed"></span> J/s, -<span id="leafNutrientLossSpeed"></span>g/s
+                        Conversion: <span id="leafAbsorbConvG"></span>g Nutrients -> <span id="leafAbsorbConvJ"></span> J<br>
+                        Rate: <span id="leafAbsorbSpeedG"></span>g Nutrients/s -> <span id="leafAbsorbSpeedJ"></span> W
                     </button>
                 </div>
                 <div id="leafNutrientsTab" class="flex-vertical font leafeonText">

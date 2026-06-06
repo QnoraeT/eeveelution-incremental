@@ -61,7 +61,7 @@ const JOLTY_ENG_UPS = [
             let i = D(2)
             return i
         },
-        effString: `Enable <span class="leafName"></span> to extract various molecules, and make <span class="leafPronoun2"></span> nutrient speed <b><span id="joltUpg2Eff" style="font-size: 16px"></span></b>x faster. (Total: <span id="joltUpg2TotalEff"></span>x)`,
+        effString: `Enable <span class="leafName"></span> to extract various molecules, and make <span class="leafPronoun2"></span> gathering speed <b><span id="joltUpg2Eff" style="font-size: 16px"></span></b>x faster. (Total: <span id="joltUpg2TotalEff"></span>x)`,
         get show() {
             return Decimal.gte(player.jolteon.bestEnergy, 100)
         }
@@ -108,41 +108,46 @@ function setupJoltyHTML() {
 }
 
 function updateJolteon_Game() {
+    tmp.jolteon.totalEnergyUsage = D(0)
+    tmp.jolteon.totalEnergyUsage = tmp.jolteon.totalEnergyUsage.add(tmp.leafeon.totalEnergyUsage)
+
     let i
     i = D(1000)
-    i = i.mul(tmp.leafAbsEngEff)
-    i = i.mul(LEAF_ELEMENTS[2].eff)
+    i = i.mul(tmp.leafeon.absEngEff)
+    i = i.mul(tmp.leafeon.elementEffs[2])
     if (getLeafMilestone(2, 0)) { i = i.mul(getLeafMileEff(2, 0)) }
     if (getLeafMilestone(2, 2)) { i = i.mul(getLeafMileEff(2, 2)) }
-    tmp.energyCap = i
+    tmp.jolteon.energyCap = i
 
-    tmp.joltyGenEff = Decimal.eq(player.jolteon.generators, 0) ? D(0) : Decimal.pow(2, player.jolteon.generators)
-    i = tmp.joltyGenEff.mul(player.tearonq.temperature).div(100)
-    i = i.mul(LEAF_ELEMENTS[1].eff)
+    tmp.jolteon.genEff = Decimal.eq(player.jolteon.generators, 0) ? D(0) : Decimal.pow(2, player.jolteon.generators)
+    i = tmp.jolteon.genEff.mul(player.tearonq.temperature).div(100)
+    i = i.mul(tmp.leafeon.elementEffs[1])
     if (getLeafMilestone(1, 1)) { i = i.mul(getLeafMileEff(1, 1)) }
-    tmp.energyGen = i
+    tmp.jolteon.energyGen = i
 
-    player.jolteon.energy = Decimal.add(player.jolteon.energy, tmp.energyGen.mul(otherGameStuffIg.gameDelta))
-    if (player.jolteon.energy.gte(tmp.energyCap)) {
-        player.jolteon.excessEnergy = Decimal.add(player.jolteon.excessEnergy, player.jolteon.energy.sub(tmp.energyCap))
-        player.jolteon.energy = tmp.energyCap
+    player.jolteon.energy = Decimal.add(player.jolteon.energy, tmp.jolteon.energyGen.mul(otherGameStuffIg.gameDelta))
+    if (player.jolteon.energy.gte(tmp.jolteon.energyCap)) {
+        player.jolteon.excessEnergy = Decimal.add(player.jolteon.excessEnergy, player.jolteon.energy.sub(tmp.jolteon.energyCap))
+        player.jolteon.energy = tmp.jolteon.energyCap
     }
     player.jolteon.bestEnergy = Decimal.max(player.jolteon.bestEnergy, player.jolteon.energy)
 
-    tmp.joltyGenCost = calcJoltyGenCost(player.jolteon.generators, false)
-    tmp.energyOverflowEff = Decimal.max(player.jolteon.excessEnergy, 0).div(1000).add(1).root(4).mul(10).dilate(1.1).div(10)
+    tmp.jolteon.genCost = calcJoltyGenCost(player.jolteon.generators, false)
+    tmp.jolteon.energyOverflowEff = Decimal.max(player.jolteon.excessEnergy, 0).div(1000).add(1).root(4).mul(10).dilate(1.1).div(10)
 }
 
 function updateJolteon_HTML() {
     let table
-    el("jolty").style.display = Decimal.gte(tmp.tearonqLevel, 5) ? "flex" : "none";
+    el("jolty").style.display = Decimal.gte(tmp.tearonq.level, 5) ? "flex" : "none";
     el("joltyGen").innerText = format(player.jolteon.generators)
-    el("joltyEng").innerText = format(player.jolteon.energy)
-    el("joltyEngCap").innerText = format(tmp.energyCap)
-    el("joltyEngGain").innerText = format(tmp.energyGen)
+    el("joltyEng").innerText = format(player.jolteon.energy, 2)
+    el("joltyEngCap").innerText = format(tmp.jolteon.energyCap)
+    el("joltyEngGain").innerText = tmp.jolteon.totalEnergyUsage.neq(0)
+        ? `${format(tmp.jolteon.energyGen, 2)} - ${format(tmp.jolteon.totalEnergyUsage, 2)} = ${format(tmp.jolteon.energyGen.sub(tmp.jolteon.totalEnergyUsage), 2)}`
+        : format(tmp.jolteon.energyGen, 2)
     el("joltyEngOv").innerText = format(player.jolteon.excessEnergy)
-    el("joltyEngOvEff").innerText = format(tmp.energyOverflowEff, 2)
-    el("joltyGenPatCost").innerText = format(tmp.joltyGenCost)
+    el("joltyEngOvEff").innerText = format(tmp.jolteon.energyOverflowEff, 2)
+    el("joltyGenPatCost").innerText = format(tmp.jolteon.genCost)
     for (let i = 0; i < JOLTY_ENG_UPS.length; i++) {
         el("joltyUpg" + i).style.display = JOLTY_ENG_UPS[i].show ? "" : "none";
         if (!JOLTY_ENG_UPS[i].show) {
@@ -175,8 +180,8 @@ function calcJoltyGenCost(x, inv = false) {
 }
 
 function buyGenerator() {
-    if (Decimal.gte(player.tearonq.pats, tmp.joltyGenCost)) {
-        player.tearonq.pats = Decimal.sub(player.tearonq.pats, tmp.joltyGenCost)
+    if (Decimal.gte(player.tearonq.pats, tmp.jolteon.genCost)) {
+        player.tearonq.pats = Decimal.sub(player.tearonq.pats, tmp.jolteon.genCost)
         player.jolteon.generators = Decimal.add(player.jolteon.generators, 1)
     }
 }

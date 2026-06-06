@@ -32,9 +32,9 @@ function updateVaporeon_Game() {
 }
 
 function updateVaporeon_HTML() {
-    el("vaporeon").style.display = Decimal.gte(tmp.tearonqLevel, 40) ? "flex" : "none";
+    el("vaporeon").style.display = Decimal.gte(tmp.tearonq.level, 40) ? "flex" : "none";
 
-    if (Decimal.gte(tmp.tearonqLevel, 40)) {
+    if (Decimal.gte(tmp.tearonq.level, 40)) {
         el("vappyWaterAmt").innerText = format(player.vap)
         el("vappyFlowAmt").innerText
         el("vappyFlowGen").innerText

@@ -3,7 +3,6 @@ const saveID = "eeveelution_incremental";
 
 const STORIES = [
     {
-        complete: 1,
         get story() {
             return [
                 `<span style="color: #ff4000; font-family: Tinos;">...</span>`
@@ -14,7 +13,7 @@ const STORIES = [
 
 function nextStory() {
     player.story[1]++
-    if (player.story[1] >= STORIES[player.story[0]].complete) {
+    if (player.story[1] >= STORIES[player.story[0]].story.length) {
         player.inStory = false
     }
 }
@@ -92,7 +91,7 @@ function initPlayer() {
             absorbed: D(0),
             nutrients: D(10),
             bestNutrients: D(10),
-            state: 1,
+            state: 0,
             elements: [D(0), D(0), D(0), D(0), D(0)],
             bestElements: [D(0), D(0), D(0), D(0), D(0)],
             elementSelected: 0
@@ -136,14 +135,71 @@ function initPlayer() {
 
 function resetTemp() {
     tmp = {
-        tearonqPPS: D(0),
-        tearonqMemberCost: D(1),
-        tearonqMemberTarget: D(0),
-        tearonqEffectiveTemp: D(0),
-        tearonqLevelBase: D(0),
-        tearonqLevel: D(0),
-        tearonqXP: D(0),
-        tearonqNextXP: D(0)
+        tearonq: {
+            pps: D(0),
+            memberCost: D(1),
+            memberTarget: D(1),
+
+            effTemperature: D(0),
+
+            levelBase: D(10),
+            level: D(0),
+            xp: D(0),
+            nextXP: D(0)
+        },
+        jolteon: {
+            energyCap: D(0),
+            energyGen: D(0),
+            genCost: D(10),
+            genEff: D(0),
+            energyOverflowEff: D(1),
+
+            totalEnergyUsage: D(0)
+        },
+        leafeon: {
+            absEngEff: D(1),
+            totalSpeed: D(1),
+            nutrientGatherSpeed: D(1),
+            nConversionGper: D(1),
+            nConversionJper: D(1),
+            nConversionSpeedG: D(1),
+            nConversionSpeedJ: D(1),
+
+            overallAbsSpd: D(1),
+            absorbJSpeed: D(1),
+            absorbNutrientLossSpeed: D(1),
+
+            extractGainConv: D(1),
+            extractLossConv: D(1),
+            extractGainConvDisp: D(1),
+            extractLossConvDisp: D(1),
+
+            overallExtractSpeed: D(1),
+            extractGainSpeed: D(1),
+            extractLossSpeed: D(1),
+            extractGainSpeedDisp: D(1),
+            extractLossSpeedDisp: D(1),
+
+            totalEnergyUsage: D(0),
+
+            elementEffs: [],
+            elementMilestoneEffs: []
+        },
+        vaporeon: {
+            speed: D(100),
+            waterGen: D(1),
+            hydrogenUse: D(2),
+            oxygenUse: D(1),
+            energyUse: D(15890)
+        }
+    }
+
+    for (let i = 0; i < LEAF_ELEMENTS.length; i++) {
+        tmp.leafeon.elementEffs.push(D(1))
+        tmp.leafeon.elementMilestoneEffs.push([])
+        for (let j = 0; j < LEAF_ELEMENTS[i].milestones; j++) {
+            tmp.leafeon.elementMilestoneEffs[i].push(D(1))
+        }
     }
 }
 
